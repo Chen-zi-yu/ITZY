@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITZY 周邊詳情展示</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            padding: 20px;
+            background-color: #f9fafb;
+            color: #111827;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #e11d48;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #e11d48;
+            color: white;
+        }
+        
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border: 1px solid #f3f4f6;
+        }
+        .detail-title { font-size: 2rem; color: #111827; margin: 0 0 15px 0; }
+        .detail-desc { font-size: 1.1rem; color: #4b5563; line-height: 1.6; margin: 0; }
+
+        .gallery-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 40px 0 20px 0;
+            border-left: 4px solid #e11d48;
+            padding-left: 10px;
+        }
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">⬅️ 返回搜尋首頁</a>
+
+<div class="detail-card">
+    <h1 id="title" class="detail-title">正在載入資訊...</h1>
+    <p id="desc" class="detail-desc"></p>
+</div>
+
+<div class="gallery-title">📸 更多商品細節照片展示</div>
+<div id="gallery" class="image-gallery"></div>
+
+<script>
+    // 💡 這裡的資料庫與圖片路徑，與你的 index.html 完全同步、一字不改
+    const detailDatabase = {
+        "motto": {
+            title: "Motto (Mini Album)",
+            desc: "ITZY 的第十二張迷你專輯。內含官方概念照與專屬豐富收藏內容。",
+            moreImages: ["./Motto/pop_up store1.jpg", "./Motto/pop_up store2.jpg"]
+        },
+        "lightring": {
+            title: "ITZY 官方應援棒 Ver.2",
+            desc: "別具特色的環形應援燈二代！支援中控幻彩變色。",
+            moreImages: ["Motto/lightring_1.jpg", "Motto/lightring_2.jpg", "Motto/lightring_box.jpg"]
+        }
+    };
+
+    // 1. 獲取網址後面的 id 參數 (?id=xxxx)
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get('id');
+
+    // 2. 從資料庫中取出對應的資料
+    const itemData = detailDatabase[targetId];
+
+    // 3. 渲染到網頁畫面上
+    if (itemData) {
+        document.getElementById('title').innerText = itemData.title;
+        document.getElementById('desc').innerText = itemData.desc;
+
+        const galleryContainer = document.getElementById('gallery');
+        // 跑迴圈把 moreImages 陣列裡的所有圖片路徑動態印出來
+        itemData.moreImages.forEach(imgSrc => {
+            const itemWrap = document.createElement('div');
+            itemWrap.className = 'gallery-item';
+            itemWrap.innerHTML = `<img src="${imgSrc}" alt="細節圖">`;
+            galleryContainer.appendChild(itemWrap);
+        });
+    } else {
+        document.getElementById('title').innerText = "抱歉，找不到該周邊的詳細資料。";
+    }
+</script>
+
+</body>
+</html>
