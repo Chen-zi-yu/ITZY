@@ -3,279 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動態圖文看板與主頁大圖</title>
+    <title>ITZY 周邊 & 專輯搜尋庫</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto 40px auto;
-            padding: 0;
-            background-color: #f4f6f8;
-            color: #333;
+            padding: 0 20px;
+            background-color: #f9fafb;
+            color: #111827;
         }
 
-        /* -----------------------------------------
-         * 新增：網頁主頁大圖區塊樣式 (Hero Banner)
-         * ----------------------------------------- */
-        .home-banner-container {
+        /* 標頭與搜尋區 */
+        .header-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        h1 {
+            color: #e11d48; /* ITZY 常用強烈風格的桃紅/紅色系 */
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .search-container {
+            margin-top: 25px;
+            position: relative;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .search-input {
             width: 100%;
-            height: 300px;
-            background-color: #eef2f5;
-            border-bottom: 2px dashed #cbd5e1;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 30px;
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: #e11d48;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+        }
+
+        /* 統計與標籤 */
+        .status-text {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* 網格版面 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        /* 卡片外觀 */
+        .item-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f3f4f6;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: background 0.3s;
         }
-        .home-banner-container:hover {
-            background-color: #e2e8f0;
-        }
-        .banner-text-trigger {
-            font-size: 1.3rem;
-            color: #475569;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 12px 24px;
-            border-radius: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            z-index: 10; /* 確保文字在圖片上方 */
-            pointer-events: none; /* 讓點擊事件穿透到外層容器 */
-            border: 2px dashed #94a3b8;
-        }
-        #banner-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 讓圖片填滿整個橫幅且不變形 */
-            display: none;
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
         }
 
-        /* 內容主體區 */
-        .content-wrap {
-            padding: 0 20px;
+        /* 卡片圖片 */
+        .img-wrap {
+            width: 100%;
+            height: 260px;
+            background-color: #f3f4f6;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .header-area {
-            text-align: center;
-            margin-bottom: 30px;
+        .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        /* 主控制按鈕 */
-        .add-block-btn {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1.1rem;
+
+        /* 卡片文字內容 */
+        .item-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .item-type {
+            align-self: flex-start;
+            font-size: 0.75rem;
             font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
-            transition: all 0.2s ease;
-        }
-        .add-block-btn:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-        }
-        /* 每一個圖文區塊的卡片外觀 */
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            animation: slideUp 0.4s ease;
-            position: relative;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* 區塊內的可編輯文字提示 */
-        .editable-text {
-            font-size: 1.2rem;
-            color: #3498db;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-block;
-            border-bottom: 2px dashed #3498db;
             padding: 4px 8px;
-            margin-bottom: 15px;
-            max-width: 90%;
-            word-break: break-all;
-        }
-        .editable-text:hover {
-            color: #2980b9;
-            background-color: #ebf5fb;
-        }
-        /* 文字編輯中的輸入框樣式 */
-        .text-input {
-            font-size: 1.2rem;
-            padding: 4px 8px;
-            width: 80%;
-            border: 2px solid #3498db;
             border-radius: 4px;
-            outline: none;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
-        /* 圖片顯示區域 */
-        .image-container {
+        .type-album { background-color: #fee2e2; color: #ef4444; }
+        .type-goods { background-color: #e0f2fe; color: #0284c7; }
+
+        .item-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            color: #1f2937;
+        }
+        .item-date {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+        .item-desc {
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* 查無結果提示 */
+        .no-results {
+            grid-column: 1 / -1;
             text-align: center;
-            margin-top: 10px;
-        }
-        .preview-img {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
-        /* 刪除按鈕 */
-        .delete-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #e74c3c;
+            padding: 50px 0;
+            color: #9ca3af;
             font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px;
-        }
-        .delete-btn:hover {
-            color: #c0392b;
-            transform: scale(1.1);
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div id="banner-section" class="home-banner-container">
-    <div id="banner-text" class="banner-text-trigger">🖼️ 點擊這裡，設定網頁主頁大圖 (Banner)</div>
-    <img id="banner-img" alt="網頁主頁大圖">
-</div>
-<input type="file" id="banner-file-input" accept="image/*" style="display: none;">
-
-<div class="content-wrap">
-    <div class="header-area">
-        <h2>📝 動態圖文功能看板</h2>
-        <p style="color: #7f8c8d;">點擊上方按鈕新增下方區塊，點擊藍色文字可以「修改內文」與「放入照片」</p>
-        <button id="add-block" class="add-block-btn">➕ 新增一個圖文區塊</button>
+<div class="header-section">
+    <h1>👑 ITZY ARCHIVE</h1>
+    <p style="color: #4b5563; font-weight: 500;">專輯、周邊與官方商品即時搜尋庫</p>
+    
+    <div class="search-container">
+        <input type="text" id="search-box" class="search-input" placeholder="輸入專輯名稱、周邊關鍵字... (如: Gold, 應援棒)">
     </div>
+</div>
 
-    <div id="board-container"></div>
+<div class="status-text" id="status-count">正在載入資料...</div>
+
+<div class="grid-container" id="products-grid">
+    <div id="no-data-msg" class="no-results">🔍 找不到相符的周邊或專輯資訊，換個關鍵字試試看！</div>
 </div>
 
 <script>
-    // --- 主頁大圖 (Banner) 邏輯 ---
-    const bannerSection = document.getElementById('banner-section');
-    const bannerFileInput = document.getElementById('banner-file-input');
-    const bannerImg = document.getElementById('banner-img');
-    const bannerText = document.getElementById('banner-text');
-
-    // 點擊大圖區塊時，觸發檔案選擇器
-    bannerSection.addEventListener('click', () => {
-        bannerFileInput.click();
-    });
-
-    // 當選好主頁大圖後
-    bannerFileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const bannerURL = URL.createObjectURL(file);
-            bannerImg.src = bannerURL;
-            bannerImg.style.display = 'block'; // 顯示大圖
-            
-            // 修改提示字，縮小並移到邊角，不遮擋主視覺
-            bannerText.innerText = "🔄 點擊可更換主頁大圖";
-            bannerText.style.fontSize = "0.9rem";
-            bannerText.style.padding = "6px 12px";
+    // 💡 1. 在這裡建立 ITZY 的資料庫 (你可以自由新增、修改裡面的內容)
+    // 圖片網址部分：為了讓你複製貼上就能直接看，我先放了網路上的公開示意圖，你之後可以換成你自己的圖片路徑（如 "images/gold.jpg"）
+    const itzyDatabase = [
+        {
+            title: "GOLD (Mini Album)",
+            type: "album",
+            typeName: "官方專輯",
+            date: "2024.10.15",
+            desc: "ITZY 的第九張微專輯，雙主打歌〈GOLD〉與〈Imaginary Friend〉，象徵著成員們閃耀的新起點。",
+            image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500&auto=format&fit=crop" 
+        },
+        {
+            title: "BORN TO BE (Mega Album)",
+            type: "album",
+            typeName: "官方專輯",
+            date: "2024.01.08",
+            desc: "充滿爆發力與野性的專輯，收錄主打歌〈UNTOUCHABLE〉，展現 ITZY 勢不可擋的生來如此態度。",
+            image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&auto=format&fit=crop"
+        },
+        {
+            title: "KILL MY DOUBT (Mini Album)",
+            type: "album",
+            typeName: "官方專輯",
+            date: "2023.07.31",
+            desc: "收錄夏日熱門神曲〈CAKE〉，打破所有質疑，展現充滿自信與活力的強烈舞台風格。",
+            image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop"
+        },
+        {
+            title: "ITZY 官方應援棒 Ver.2 (Light Ring)",
+            type: "goods",
+            typeName: "官方周邊",
+            date: "官方常售商品",
+            desc: "別具特色的環形應援燈二代！支援中控幻彩變色，MIDZY 現場應援必備的發光神器。",
+            image: "https://images.unsplash.com/photo-1563991629280-99c25de74803?w=500&auto=format&fit=crop"
+        },
+        {
+            title: "ITZY 2ND WORLD TOUR [BORN TO BE] 官方連帽衫",
+            type: "goods",
+            typeName: "巡演周邊",
+            date: "2024 Tour",
+            desc: "世界巡迴演唱會限定周邊，正面印有巡演專屬 Logo，材質舒適，兼具日常穿搭與收藏價值。",
+            image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&auto=format&fit=crop"
+        },
+        {
+            title: "CRAZY IN LOVE (1st Full Album)",
+            type: "album",
+            typeName: "正規專輯",
+            date: "2021.09.24",
+            desc: "ITZY 的首張正規專輯！主打歌〈LOCO〉色彩斑斕，完美展現陷入愛情時的瘋狂與大膽。",
+            image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&auto=format&fit=crop"
         }
-    });
+    ];
 
+    // 2. 抓取網頁上的 HTML 元素
+    const searchBox = document.getElementById('search-box');
+    const productsGrid = document.getElementById('products-grid');
+    const statusCount = document.getElementById('status-count');
+    const noDataMsg = document.getElementById('no-data-msg');
 
-    // --- 原有的動態圖文看板邏輯 ---
-    const addBlockBtn = document.getElementById('add-block');
-    const boardContainer = document.getElementById('board-container');
+    // 3. 渲染網頁畫面的函式
+    function renderItems(items) {
+        // 先把舊的卡片清空（但保留「查無結果」的提示區塊）
+        const cards = productsGrid.querySelectorAll('.item-card');
+        cards.forEach(card => card.remove());
 
-    addBlockBtn.addEventListener('click', createNewBlock);
+        // 更新統計文字
+        statusCount.innerText = `目前顯示： ${items.length} 筆資料`;
 
-    function createNewBlock() {
-        const card = document.createElement('div');
-        card.className = 'card';
+        if (items.length === 0) {
+            noDataMsg.style.display = 'block'; // 顯示找不到資料的提示
+            return;
+        }
+        noDataMsg.style.display = 'none';
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.innerHTML = '🗑️';
-        deleteBtn.addEventListener('click', () => card.remove());
+        // 跑迴圈，把資料一筆一筆組裝成 HTML 塞進網頁
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
 
-        const textLabel = document.createElement('div');
-        textLabel.className = 'editable-text';
-        textLabel.innerText = '✏️ 點我修改文字或放照片 (預設文字)';
-
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'image-container';
-        const img = document.createElement('img');
-        img.className = 'preview-img';
-        imgContainer.appendChild(img);
-
-        // 點擊文字改字 + 改完跳選檔案
-        textLabel.addEventListener('click', function() {
-            if (card.querySelector('.text-input')) return;
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'text-input';
-            input.value = textLabel.innerText.replace('✏️ ', '');
-
-            card.insertBefore(input, textLabel);
-            textLabel.style.display = 'none';
-            input.focus();
-
-            function saveAndUpload() {
-                if (input.value.trim() !== "") {
-                    textLabel.innerText = '✏️ ' + input.value;
-                }
-                textLabel.style.display = 'inline-block';
-                input.remove();
-                fileInput.click(); // 改完字直接選照片
-            }
-
-            input.addEventListener('blur', saveAndUpload);
-            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveAndUpload(); });
+            card.innerHTML = `
+                <div class="img-wrap">
+                    <img src="${item.image}" alt="${item.title}">
+                </div>
+                <div class="item-info">
+                    <span class="item-type type-${item.type}">${item.typeName}</span>
+                    <h3 class="item-title">${item.title}</h3>
+                    <div class="item-date">發行/開賣日期: ${item.date}</div>
+                    <p class="item-desc">${item.desc}</p>
+                </div>
+            `;
+            productsGrid.appendChild(card);
         });
-
-        // 選好區塊圖片後顯示
-        fileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const imageURL = URL.createObjectURL(file);
-                img.src = imageURL;
-                img.style.display = 'inline-block';
-            }
-        });
-
-        card.appendChild(deleteBtn);
-        card.appendChild(textLabel);
-        card.appendChild(fileInput);
-        card.appendChild(imgContainer);
-        boardContainer.appendChild(card);
     }
 
-    // 網頁載入時，預設先幫使用者建立第一個區塊
-    window.onload = function() {
-        createNewBlock();
-    };
+    // 4. 關鍵核心：監聽搜尋框的打字事件
+    searchBox.addEventListener('input', (event) => {
+        const keyword = event.target.value.toLowerCase().trim();
+
+        // 使用 filter 過濾出符合標題或描述包含關鍵字的項目
+        const filteredData = itzyDatabase.filter(item => {
+            return item.title.toLowerCase().includes(keyword) || 
+                   item.desc.toLowerCase().includes(keyword) ||
+                   item.typeName.toLowerCase().includes(keyword);
+        });
+
+        // 把過濾後的乾淨資料重新畫在畫面上
+        renderItems(filteredData);
+    });
+
+    // 5. 初始化：網頁一打開，先顯示所有 ITZY 資料
+    renderItems(itzyDatabase);
 </script>
 
 </body>
