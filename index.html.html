@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態圖文看板與主頁大圖</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        /* -----------------------------------------
+         * 新增：網頁主頁大圖區塊樣式 (Hero Banner)
+         * ----------------------------------------- */
+        .home-banner-container {
+            width: 100%;
+            height: 300px;
+            background-color: #eef2f5;
+            border-bottom: 2px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .home-banner-container:hover {
+            background-color: #e2e8f0;
+        }
+        .banner-text-trigger {
+            font-size: 1.3rem;
+            color: #475569;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            z-index: 10; /* 確保文字在圖片上方 */
+            pointer-events: none; /* 讓點擊事件穿透到外層容器 */
+            border: 2px dashed #94a3b8;
+        }
+        #banner-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 讓圖片填滿整個橫幅且不變形 */
+            display: none;
+        }
+
+        /* 內容主體區 */
+        .content-wrap {
+            padding: 0 20px;
+        }
+        .header-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        /* 主控制按鈕 */
+        .add-block-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+            transition: all 0.2s ease;
+        }
+        .add-block-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        /* 每一個圖文區塊的卡片外觀 */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            animation: slideUp 0.4s ease;
+            position: relative;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* 區塊內的可編輯文字提示 */
+        .editable-text {
+            font-size: 1.2rem;
+            color: #3498db;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            border-bottom: 2px dashed #3498db;
+            padding: 4px 8px;
+            margin-bottom: 15px;
+            max-width: 90%;
+            word-break: break-all;
+        }
+        .editable-text:hover {
+            color: #2980b9;
+            background-color: #ebf5fb;
+        }
+        /* 文字編輯中的輸入框樣式 */
+        .text-input {
+            font-size: 1.2rem;
+            padding: 4px 8px;
+            width: 80%;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+        /* 圖片顯示區域 */
+        .image-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+        /* 刪除按鈕 */
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .delete-btn:hover {
+            color: #c0392b;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+<div id="banner-section" class="home-banner-container">
+    <div id="banner-text" class="banner-text-trigger">🖼️ 點擊這裡，設定網頁主頁大圖 (Banner)</div>
+    <img id="banner-img" alt="網頁主頁大圖">
+</div>
+<input type="file" id="banner-file-input" accept="image/*" style="display: none;">
+
+<div class="content-wrap">
+    <div class="header-area">
+        <h2>📝 動態圖文功能看板</h2>
+        <p style="color: #7f8c8d;">點擊上方按鈕新增下方區塊，點擊藍色文字可以「修改內文」與「放入照片」</p>
+        <button id="add-block" class="add-block-btn">➕ 新增一個圖文區塊</button>
+    </div>
+
+    <div id="board-container"></div>
+</div>
+
+<script>
+    // --- 主頁大圖 (Banner) 邏輯 ---
+    const bannerSection = document.getElementById('banner-section');
+    const bannerFileInput = document.getElementById('banner-file-input');
+    const bannerImg = document.getElementById('banner-img');
+    const bannerText = document.getElementById('banner-text');
+
+    // 點擊大圖區塊時，觸發檔案選擇器
+    bannerSection.addEventListener('click', () => {
+        bannerFileInput.click();
+    });
+
+    // 當選好主頁大圖後
+    bannerFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const bannerURL = URL.createObjectURL(file);
+            bannerImg.src = bannerURL;
+            bannerImg.style.display = 'block'; // 顯示大圖
+            
+            // 修改提示字，縮小並移到邊角，不遮擋主視覺
+            bannerText.innerText = "🔄 點擊可更換主頁大圖";
+            bannerText.style.fontSize = "0.9rem";
+            bannerText.style.padding = "6px 12px";
+        }
+    });
+
+
+    // --- 原有的動態圖文看板邏輯 ---
+    const addBlockBtn = document.getElementById('add-block');
+    const boardContainer = document.getElementById('board-container');
+
+    addBlockBtn.addEventListener('click', createNewBlock);
+
+    function createNewBlock() {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.addEventListener('click', () => card.remove());
+
+        const textLabel = document.createElement('div');
+        textLabel.className = 'editable-text';
+        textLabel.innerText = '✏️ 點我修改文字或放照片 (預設文字)';
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'image-container';
+        const img = document.createElement('img');
+        img.className = 'preview-img';
+        imgContainer.appendChild(img);
+
+        // 點擊文字改字 + 改完跳選檔案
+        textLabel.addEventListener('click', function() {
+            if (card.querySelector('.text-input')) return;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'text-input';
+            input.value = textLabel.innerText.replace('✏️ ', '');
+
+            card.insertBefore(input, textLabel);
+            textLabel.style.display = 'none';
+            input.focus();
+
+            function saveAndUpload() {
+                if (input.value.trim() !== "") {
+                    textLabel.innerText = '✏️ ' + input.value;
+                }
+                textLabel.style.display = 'inline-block';
+                input.remove();
+                fileInput.click(); // 改完字直接選照片
+            }
+
+            input.addEventListener('blur', saveAndUpload);
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveAndUpload(); });
+        });
+
+        // 選好區塊圖片後顯示
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const imageURL = URL.createObjectURL(file);
+                img.src = imageURL;
+                img.style.display = 'inline-block';
+            }
+        });
+
+        card.appendChild(deleteBtn);
+        card.appendChild(textLabel);
+        card.appendChild(fileInput);
+        card.appendChild(imgContainer);
+        boardContainer.appendChild(card);
+    }
+
+    // 網頁載入時，預設先幫使用者建立第一個區塊
+    window.onload = function() {
+        createNewBlock();
+    };
+</script>
+
+</body>
+</html>
