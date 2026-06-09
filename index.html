@@ -56,13 +56,33 @@
         .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
 
         /* 原有設計 */
-        .header-section { text-align: center; padding: 50px 0 30px 0; }
+        .header-section { text-align: center; padding: 50px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1); }
-        .search-container { margin: 35px auto 0 auto; position: relative; max-width: 600px; }
+        
+        /* 隨機照片展示框樣式（移除了文字欄位，改用純圖片容器樣式） */
+        .random-banner-container {
+            max-width: 800px;
+            margin: 30px auto 30px auto;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            background: var(--card-bg);
+        }
+        .random-banner-container img {
+            width: 100%;
+            /* 預設高度為 400px，若資料庫有設定會被個別覆蓋 */
+            height: 400px; 
+            object-fit: cover;
+            display: block;
+        }
+
+        .search-container { margin: 0 auto 40px auto; position: relative; max-width: 600px; }
         
         /* 讓搜尋框也繼承主字體 */
         .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; font-family: inherit; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-top: 40px; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
         .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
 
         /* 🔔 社群帳號連結區塊與共同樣式 */
@@ -159,6 +179,10 @@
     </div>
 </div>
 
+<div class="random-banner-container" id="randomBannerBox" style="display: none;">
+    <img id="randomBannerImg" src="" alt="隨機推薦精選圖">
+</div>
+
 <div class="search-container">
     <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋專輯或官方周邊...">
 </div>
@@ -170,6 +194,7 @@
     document.getElementById('agreeBtn').onclick = () => {
         document.getElementById('noticeOverlay').style.display = 'none';
         document.getElementById('noticeBar').style.display = 'block';
+        initRandomBanner();
     };
 
     // 2. 回饋功能
@@ -213,12 +238,39 @@
         });
     };
 
-    // 3. 商品邏輯
+    // 3. 商品資料庫
     const itzyDatabase = [
         {id: "motto", title: "Motto (Mini Album)", type: "album", typeName: "官方專輯", date: "2026.05.18", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/motto2.jpg"},
         {id: "lightring", title: "ITZY 官方應援棒 Ver.2", type: "goods", typeName: "官方周邊", date: "官方常售商品", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
     ];
     
+    // 🎯 關鍵修改：移除 text 文字欄位，改為設定每個圖片所需要的專屬高度 (imgHeight)
+    const randomPhotosPool = [
+        { img: "./Motto/Motto.jpg", imgHeight: "450px" },        // 👈 這張想要比較高 (450px)
+        { img: "./Motto/pop_up_store.jpg", imgHeight: "350px" }, // 👈 這張想要矮一點 (350px)
+        { img: "./motto/lightring_1.jpg", imgHeight: "400px" },  // 👈 這張想要剛好 (400px)
+        { img: "./Motto/motto3.jpg", imgHeight: "300px" }        // 👈 這張想要小圖橫幅 (300px)
+    ];
+
+    // 初始化隨機照片邏輯
+    function initRandomBanner() {
+        if (randomPhotosPool.length > 0) {
+            const bannerBox = document.getElementById('randomBannerBox');
+            const bannerImg = document.getElementById('randomBannerImg');
+            
+            const randomIndex = Math.floor(Math.random() * randomPhotosPool.length);
+            const selectedPhoto = randomPhotosPool[randomIndex];
+            
+            // 塞入圖片路徑
+            bannerImg.src = selectedPhoto.img;
+            
+            // 🎯 個別動態控制該張圖片的高度（如果資料裡沒寫，就給它預設值 400px）
+            bannerImg.style.height = selectedPhoto.imgHeight ? selectedPhoto.imgHeight : "400px";
+            
+            bannerBox.style.display = 'block';
+        }
+    }
+
     function renderItems(items) {
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = items.map(item => `
@@ -228,6 +280,18 @@
             </div>
         `).join('');
     }
+
+    // 4. 搜尋功能連動
+    document.getElementById('searchBox').oninput = function() {
+        const keyword = this.value.toLowerCase().trim();
+        const filtered = itzyDatabase.filter(item => 
+            item.title.toLowerCase().includes(keyword) || 
+            item.desc.toLowerCase().includes(keyword)
+        );
+        renderItems(filtered);
+    };
+
+    // 初始載入渲染商品列表
     renderItems(itzyDatabase);
 </script>
 
