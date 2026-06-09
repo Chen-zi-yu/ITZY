@@ -276,8 +276,7 @@
 
 <div class="carousel-container">
     <button class="carousel-btn prev" id="prevSlide">‹</button>
-    <div id="carouselWrapper">
-        </div>
+    <div id="carouselWrapper"></div>
     <button class="carousel-btn next" id="nextSlide">›</button>
 </div>
 
@@ -399,16 +398,16 @@
     // 初始載入渲染商品列表
     renderItems(itzyDatabase);
 
-    // 🌌 5. 新增：圖片隨機輪播框的 JS 驅動核心
+    // 🌌 5. 升級：圖片隨機輪播庫的 JS 驅動核心（改為物件陣列，可自訂 position）
+    // position 的寫法代表「水平位置 垂直位置」。 
+    // 例如 "center center" 是全置中、"center top" 是靠上、"center 20%" 是稍微偏上。
     const bannerImages = [
-        "./video/IMG_4869.jpg",
-        "./video/IMG_4870.jpg",
-        "./video/IMG_4923.jpg",
-        "./video/IMG_4926.jpg",
-        "./video/IMG_4928.jpg",
-        "./video/IMG_4932.jpg",
-        "./video/IMG_4933.jpg",
-        "./video/IMG_4934.jpg"
+        { src: "./video/IMG_4869.jpg", position: "center center" },
+        { src: "./video/IMG_4923.jpg", position: "center 60%" },
+        { src: "./video/IMG_4926.jpg", position: "center 30%" }, // 30% 代表稍微露出上方多一點
+        { src: "./video/IMG_4932.jpg", position: "center 20%" }, // bottom 靠下對齊
+        { src: "./video/IMG_4933.jpg", position: "center 40%" },
+        { src: "./video/IMG_4934.jpg", position: "center 20%" }
     ];
 
     // 隨機決定第一張初始圖片的索引
@@ -417,10 +416,10 @@
 
     function initCarousel() {
         const wrapper = document.getElementById('carouselWrapper');
-        // 生成所有輪播投影片 HTML
-        wrapper.innerHTML = bannerImages.map((imgSrc, idx) => `
+        // 生成所有輪播投影片 HTML，並注入手動調整的 object-position
+        wrapper.innerHTML = bannerImages.map((imgObj, idx) => `
             <div class="carousel-slide ${idx === currentSlideIdx ? 'active' : ''}">
-                <img src="${imgSrc}" alt="ITZY Banner ${idx + 1}">
+                <img src="${imgObj.src}" alt="ITZY Banner ${idx + 1}" style="object-position: ${imgObj.position || 'center center'};">
             </div>
         `).join('');
 
