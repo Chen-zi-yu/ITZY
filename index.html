@@ -14,57 +14,32 @@
             --text-muted: #64748b;
         }
 
-        body {
-            font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
+        body { font-family: 'PingFang TC', sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); }
 
-        /* 🔔 跑馬燈樣式 */
+        /* 🔔 跑馬燈樣式 (初始隱藏) */
         .notice-bar {
-            background-color: #fff1f2;
-            color: var(--primary-color);
-            padding: 10px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-bottom: 1px solid #ffe4e6;
-            position: sticky;
-            top: 0;
-            z-index: 9999;
+            background-color: #fff1f2; color: var(--primary-color); padding: 10px 0;
+            overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600;
+            border-bottom: 1px solid #ffe4e6; position: sticky; top: 0; z-index: 9999;
+            display: none; /* 初始狀態為隱藏 */
         }
-        .notice-bar span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 25s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* 頁面內容容器 */
+        /* 初始彈窗樣式 */
+        .notice-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000;
+        }
+        .notice-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; }
+        .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; margin-top: 15px; }
+
+        /* 原有設計 */
         .main-content { max-width: 1200px; margin: 0 auto 60px auto; padding: 0 24px; }
-        
-        /* 標頭美化 */
         .header-section { text-align: center; padding: 40px 0 30px 0; }
-        h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; }
-        .header-subtitle { color: var(--text-muted); }
-
-        /* 搜尋框 */
-        .search-container { margin: 20px auto; position: relative; max-width: 600px; }
-        .search-input { width: 100%; padding: 16px 26px; border-radius: 50px; border: 2px solid #e2e8f0; outline: none; }
-
-        /* 商品網格 */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-top: 40px; }
         .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        
-        /* 懸浮回饋按鈕 */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
-        
-        /* 意見回饋彈窗 */
         .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
         .feedback-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; }
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; }
@@ -73,8 +48,16 @@
 </head>
 <body>
 
-<div class="notice-bar">
+<div class="notice-bar" id="noticeBar">
     <span>📢 本網站為個人非營利收藏紀錄，所有照片與素材皆來自網路公開資源，版權歸原創作者所有。本站內容禁止作為任何商業盈利用途。</span>
+</div>
+
+<div class="notice-overlay" id="noticeOverlay">
+    <div class="notice-box">
+        <h2 style="color:var(--primary-color)">📢 網站使用聲明</h2>
+        <p style="text-align:left; font-size:0.95rem;">本網站為個人學術興趣收藏，非營利用途。所有內容來自網路，版權歸原創作者所有，禁止商用。</p>
+        <button class="notice-btn" id="agreeBtn">我已了解並同意</button>
+    </div>
 </div>
 
 <div class="main-content">
@@ -84,6 +67,7 @@
     </div>
 
     <button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
+    
     <div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
         <div class="feedback-box">
             <h3>💡 給我們意見</h3>
@@ -105,7 +89,13 @@
 </div>
 
 <script>
-    // 意見回饋彈窗邏輯
+    // 同意彈窗邏輯：隱藏彈窗、顯示跑馬燈
+    document.getElementById('agreeBtn').onclick = () => {
+        document.getElementById('noticeOverlay').style.display = 'none';
+        document.getElementById('noticeBar').style.display = 'block';
+    };
+
+    // 意見回饋邏輯
     const feedbackOverlay = document.getElementById('feedbackOverlay');
     document.getElementById('openFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'flex';
     document.getElementById('closeFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'none';
@@ -115,7 +105,7 @@
         feedbackOverlay.style.display = 'none';
     };
 
-    // 商品渲染 (為了簡潔，保留基本架構)
+    // 商品渲染
     const itzyDatabase = [
         {id: "motto", title: "Motto (Mini Album)", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/Motto.jpg"},
         {id: "lightring", title: "ITZY 官方應援棒 Ver.2", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
