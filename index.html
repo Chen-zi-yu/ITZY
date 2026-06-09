@@ -16,145 +16,120 @@
 
         body {
             font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
-            max-width: 1200px;    
-            margin: 0 auto 60px auto;
-            padding: 0 24px;
+            margin: 0;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.5;
         }
 
+        /* 🔔 跑馬燈樣式 */
+        .notice-bar {
+            background-color: #fff1f2;
+            color: var(--primary-color);
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid #ffe4e6;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+        }
+        .notice-bar span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* 頁面內容容器 */
+        .main-content { max-width: 1200px; margin: 0 auto 60px auto; padding: 0 24px; }
+        
         /* 標頭美化 */
-        .header-section { text-align: center; padding: 50px 0 30px 0; }
-        h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; }
-        .header-subtitle { color: var(--text-muted); font-size: 1.05rem; font-weight: 500; letter-spacing: 1px; }
+        .header-section { text-align: center; padding: 40px 0 30px 0; }
+        h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; }
+        .header-subtitle { color: var(--text-muted); }
 
         /* 搜尋框 */
-        .search-container { margin: 35px auto 0 auto; position: relative; max-width: 600px; }
-        .search-input { width: 100%; padding: 16px 26px; font-size: 1.05rem; border: 2px solid #e2e8f0; border-radius: 50px; outline: none; background-color: var(--card-bg); transition: all 0.3s; }
-        .search-input:focus { border-color: var(--primary-color); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.12); }
+        .search-container { margin: 20px auto; position: relative; max-width: 600px; }
+        .search-input { width: 100%; padding: 16px 26px; border-radius: 50px; border: 2px solid #e2e8f0; outline: none; }
 
         /* 商品網格 */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-top: 40px; }
-        .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03); border: 1px solid #f1f5f9; transition: all 0.4s; }
-        .item-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px rgba(15, 23, 42, 0.08); }
-        .img-link { width: 100%; height: 260px; overflow: hidden; display: block; background-color: #f1f5f9; cursor: pointer; }
-        .img-link img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .item-card:hover .img-link img { transform: scale(1.06); }
-        .item-info { padding: 24px; }
-
-        /* 輪播看板 */
-        .slider-container { width: 100%; max-width: 850px; height: 520px; margin: 25px auto 0 auto; border-radius: 24px; overflow: hidden; position: relative; background-color: #000; cursor: pointer; }
-        .slider-item { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease-in-out; }
-        .slider-item.active { opacity: 1; }
-        .slider-item img, .slider-item video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* 彈出視窗與反饋按鈕樣式 */
-        .notice-overlay, .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
-        .notice-box, .feedback-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; }
-        .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; margin-top: 15px; }
+        .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        
+        /* 懸浮回饋按鈕 */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
-        textarea { width: 100%; height: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 12px; margin-top: 10px; box-sizing: border-box; }
+        
+        /* 意見回饋彈窗 */
+        .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .feedback-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; }
+        textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; }
+        .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-<div class="notice-overlay" id="noticeOverlay">
-    <div class="notice-box">
-        <h2 style="color:var(--primary-color)">📢 網站使用聲明</h2>
-        <div style="text-align:left; font-size:0.95rem; line-height:1.6">
-            <p>本網站為個人學術興趣收藏，非營利用途。所有內容來自網路，版權歸原創者所有，禁止商用。</p>
+<div class="notice-bar">
+    <span>📢 本網站為個人非營利收藏紀錄，所有照片與素材皆來自網路公開資源，版權歸原創作者所有。本站內容禁止作為任何商業盈利用途。</span>
+</div>
+
+<div class="main-content">
+    <div class="header-section">
+        <h1>ITZY! MIDZY! 날자!</h1>
+        <div class="header-subtitle">ITZY 專輯與周邊收藏實拍紀錄庫</div>
+    </div>
+
+    <button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
+    <div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
+        <div class="feedback-box">
+            <h3>💡 給我們意見</h3>
+            <form id="feedbackForm">
+                <textarea id="feedbackText" placeholder="請輸入您的建議..." required></textarea>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="button" class="btn-submit" style="background:#64748b" id="closeFeedbackBtn">取消</button>
+                    <button type="submit" class="btn-submit">送出</button>
+                </div>
+            </form>
         </div>
-        <button class="notice-btn" id="closeNoticeBtn">我已了解並同意</button>
     </div>
-</div>
 
-<button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
-<div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
-    <div class="feedback-box">
-        <h3>💡 給我們意見</h3>
-        <form id="feedbackForm">
-            <textarea id="feedbackText" placeholder="請輸入您的建議..." required></textarea>
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-                <button type="button" class="notice-btn" style="background:#64748b" id="closeFeedbackBtn">取消</button>
-                <button type="submit" class="notice-btn">送出</button>
-            </div>
-        </form>
+    <div class="search-container">
+        <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋...">
     </div>
+
+    <div class="grid-container" id="productsGrid"></div>
 </div>
-
-<div class="header-section">
-    <h1>ITZY! MIDZY! 날자!</h1>
-    <div class="header-subtitle">ITZY 專輯與周邊收藏實拍紀錄庫</div>
-</div>
-
-<div class="slider-container" id="slider"></div>
-
-<div class="search-container">
-    <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋...">
-</div>
-
-<div class="grid-container" id="productsGrid"></div>
 
 <script>
-    // 1. 彈窗邏輯
-    const noticeOverlay = document.getElementById('noticeOverlay');
-    document.getElementById('closeNoticeBtn').onclick = () => noticeOverlay.style.display = 'none';
-
-    // 2. 回饋功能邏輯
+    // 意見回饋彈窗邏輯
     const feedbackOverlay = document.getElementById('feedbackOverlay');
     document.getElementById('openFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'flex';
     document.getElementById('closeFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'none';
     document.getElementById('feedbackForm').onsubmit = (e) => {
         e.preventDefault();
-        alert('感謝您的回饋！');
+        alert('感謝您的建議！');
         feedbackOverlay.style.display = 'none';
     };
 
-    // 3. 輪播資料
-    const bannerMediaFiles = [
-        { url: "./video/IMG_4869.jpg" }, { url: "./video/IMG_4870.jpg" }, { url: "./video/IMG_4923.jpg" },
-        { url: "./video/IMG_4926.jpg" }, { url: "./video/IMG_4928.jpg" }, { url: "./video/IMG_4932.jpg" },
-        { url: "./video/IMG_4933.jpg" }, { url: "./video/IMG_4934.jpg" }
-    ];
-
-    const sliderContainer = document.getElementById('slider');
-    let currentSlide = 0;
-    bannerMediaFiles.forEach((f, i) => {
-        const item = document.createElement('div');
-        item.className = i === 0 ? 'slider-item active' : 'slider-item';
-        item.innerHTML = `<img src="${f.url}">`;
-        sliderContainer.appendChild(item);
-    });
-
-    const slides = document.querySelectorAll('.slider-item');
-    function nextSlide() {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-    }
-    sliderContainer.onclick = nextSlide;
-    setInterval(nextSlide, 4000);
-
-    // 4. 商品資料與搜尋邏輯 (略)
+    // 商品渲染 (為了簡潔，保留基本架構)
     const itzyDatabase = [
-        {id: "motto", title: "Motto (Mini Album)", type: "album", typeName: "官方專輯", date: "2026.05.18", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/Motto.jpg"},
-        {id: "lightring", title: "ITZY 官方應援棒 Ver.2", type: "goods", typeName: "官方周邊", date: "官方常售商品", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
+        {id: "motto", title: "Motto (Mini Album)", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/Motto.jpg"},
+        {id: "lightring", title: "ITZY 官方應援棒 Ver.2", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
     ];
     
     function renderItems(items) {
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = items.map(item => `
             <div class="item-card">
-                <a class="img-link" href="detail.html?id=${item.id}"><img src="${item.image}"></a>
-                <div class="item-info"><h3>${item.title}</h3><p>${item.desc}</p></div>
+                <a href="detail.html?id=${item.id}" style="display:block"><img src="${item.image}" style="width:100%; height:260px; object-fit:cover;"></a>
+                <div style="padding:20px"><h3>${item.title}</h3><p>${item.desc}</p></div>
             </div>
         `).join('');
     }
-    document.getElementById('searchBox').oninput = (e) => {
-        const val = e.target.value.toLowerCase();
-        renderItems(itzyDatabase.filter(i => i.title.toLowerCase().includes(val)));
-    };
     renderItems(itzyDatabase);
 </script>
 
