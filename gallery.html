@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 細節相簿展示</title>
     <style>
-        /* 採用與你原本設計完全一致的優雅粉紅配色與質感 */
         :root {
             --primary-color: #e11d48;
             --bg-color: #f8fafc;
@@ -14,7 +13,8 @@
         }
 
         body {
-            font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
+            /* 🎯 關鍵：英文 Times New Roman 排前面，中文標楷體排後面 */
+            font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif;
             max-width: 1000px;
             margin: 0 auto 60px auto;
             padding: 24px;
@@ -22,7 +22,6 @@
             color: var(--text-main);
         }
 
-        /* 返回按鈕（維持原本 detail.html 的優雅圓角與陰影樣式） */
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -37,6 +36,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
         .back-btn:hover {
             color: var(--primary-color);
@@ -88,7 +88,7 @@
             border-top: 1px solid #f1f5f9;
         }
 
-        /* 點擊放大燈箱 (Lightbox) ── 完美移植你原本超讚的放大功能 */
+        /* 點擊放大燈箱 (Lightbox) */
         .lightbox {
             position: fixed;
             top: 0;
@@ -120,12 +120,14 @@
         .lightbox.active img {
             transform: scale(1);
         }
+        /* 🎯 將燈箱彈出視窗底部的提示文字強制設定為粗體 */
         .lightbox-hint {
             position: absolute;
             bottom: 30px;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.8);
             font-size: 0.9rem;
             letter-spacing: 1px;
+            font-weight: bold; 
         }
     </style>
 </head>
@@ -145,7 +147,6 @@
 </div>
 
 <script>
-    // 💡 這裡獨立管理所有分類相簿的圖片與路徑（注意大小寫需與實際資料夾一致）
     const photosDatabase = {
         "motto": {
             "popup": {
@@ -174,17 +175,14 @@
         }
     };
 
-    // 1. 解析網址參數 (例如：gallery.html?id=motto&album=popup)
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     const albumId = urlParams.get('album');
 
-    // 2. 讓返回按鈕能精準回到對應的原本 detail 頁面
     if (productId) {
         document.getElementById('back-link').href = `detail.html?id=${productId}`;
     }
 
-    // 3. 撈取獨立相簿資料庫並渲染
     try {
         const currentAlbum = photosDatabase[productId][albumId];
         if (currentAlbum) {
@@ -201,7 +199,6 @@
                 container.appendChild(card);
             });
 
-            // 4. 點擊圖片放大功能（完美保留原本燈箱邏輯）
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             const zoomableImages = document.querySelectorAll('.zoomable-img');
