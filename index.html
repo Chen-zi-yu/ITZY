@@ -25,251 +25,61 @@
         }
 
         /* 標頭美化 */
-        .header-section { 
-            text-align: center; 
-            padding: 50px 0 30px 0; 
-        }
-        h1 { 
-            color: var(--primary-color); 
-            font-size: 2.8rem; 
-            font-weight: 800;
-            margin-bottom: 8px; 
-            letter-spacing: 3px;
-            text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1);
-        }
-        .header-subtitle {
-            color: var(--text-muted); 
-            font-size: 1.05rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
+        .header-section { text-align: center; padding: 50px 0 30px 0; }
+        h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; }
+        .header-subtitle { color: var(--text-muted); font-size: 1.05rem; font-weight: 500; letter-spacing: 1px; }
 
-        /* 搜尋框美化 */
-        .search-container { 
-            margin: 35px auto 0 auto; 
-            position: relative; 
-            max-width: 600px; 
-        }
-        .search-input { 
-            width: 100%; 
-            padding: 16px 26px; 
-            font-size: 1.05rem; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 50px; 
-            outline: none; 
-            background-color: var(--card-bg);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .search-input:focus { 
-            border-color: var(--primary-color); 
-            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.12);
-            transform: translateY(-2px);
-        }
+        /* 搜尋框 */
+        .search-container { margin: 35px auto 0 auto; position: relative; max-width: 600px; }
+        .search-input { width: 100%; padding: 16px 26px; font-size: 1.05rem; border: 2px solid #e2e8f0; border-radius: 50px; outline: none; background-color: var(--card-bg); transition: all 0.3s; }
+        .search-input:focus { border-color: var(--primary-color); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.12); }
 
-        .status-text { 
-            text-align: center; 
-            color: var(--text-muted); 
-            margin-bottom: 35px; 
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
+        /* 商品網格 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-top: 40px; }
+        .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03); border: 1px solid #f1f5f9; transition: all 0.4s; }
+        .item-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px rgba(15, 23, 42, 0.08); }
+        .img-link { width: 100%; height: 260px; overflow: hidden; display: block; background-color: #f1f5f9; cursor: pointer; }
+        .img-link img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .item-card:hover .img-link img { transform: scale(1.06); }
+        .item-info { padding: 24px; }
 
-        /* 🛍️ 商品網格佈局：寬度調整 */
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
-            gap: 30px; 
-        }
-        .item-card { 
-            background: var(--card-bg); 
-            border-radius: 20px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03), 0 1px 4px rgba(15, 23, 42, 0.02);
-            border: 1px solid #f1f5f9; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; 
-            flex-direction: column; 
-        }
-        .item-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
-            border-color: #e2e8f0;
-        }
-        
-        /* 🖼️ 照片外框比例 */
-        .img-link { 
-            width: 100%; 
-            height: 260px; 
-            overflow: hidden; 
-            display: block; 
-            cursor: pointer; 
-            background-color: #f1f5f9;
-        }
-        .img-link img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        .item-card:hover .img-link img { 
-            transform: scale(1.06); 
-        }
+        /* 輪播看板 */
+        .slider-container { width: 100%; max-width: 850px; height: 520px; margin: 25px auto 0 auto; border-radius: 24px; overflow: hidden; position: relative; background-color: #000; cursor: pointer; }
+        .slider-item { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease-in-out; }
+        .slider-item.active { opacity: 1; }
+        .slider-item img, .slider-item video { width: 100%; height: 100%; object-fit: cover; }
 
-        .item-info { 
-            padding: 24px; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-        }
-        .item-type { 
-            align-self: flex-start; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            padding: 6px 12px; 
-            border-radius: 30px; 
-            margin-bottom: 14px; 
-            letter-spacing: 0.5px;
-        }
-        .type-album { background-color: #ffe4e6; color: #f43f5e; }
-        .type-goods { background-color: #e0f2fe; color: #0284c7; }
-        
-        .item-title { 
-            font-size: 1.25rem; 
-            font-weight: 700; 
-            margin: 0 0 8px 0; 
-            color: var(--text-main);
-        }
-        .item-date { 
-            font-size: 0.85rem; 
-            color: var(--text-muted); 
-            margin-bottom: 12px; 
-            font-weight: 500;
-        }
-        .item-desc { 
-            font-size: 0.92rem; 
-            color: #475569; 
-            line-height: 1.6; 
-            margin: 0; 
-        }
-        .no-results { 
-            grid-column: 1 / -1; 
-            text-align: center; 
-            padding: 60px 0; 
-            color: var(--text-muted); 
-            display: none; 
-            font-size: 1.1rem;
-        }
-
-        /* 🎡 輪播看板美化：寬度縮窄、直向拉高 */
-        .slider-container {
-            width: 100%;
-            max-width: 850px;    
-            height: 520px;       
-            margin: 25px auto 0 auto; 
-            border-radius: 24px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-            background-color: #000;
-            cursor: pointer; 
-        }
-        .slider-item {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out; 
-            z-index: 1;
-        }
-        .slider-item.active {
-            opacity: 1;
-            z-index: 2;
-        }
-        .slider-item img, .slider-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            object-position: center center; 
-        }
-
-        /* 🔔 【新功能：免責聲明彈出視窗 CSS】 */
-        .notice-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.6); /* 半透明深色背景 */
-            backdrop-filter: blur(4px); /* 背景模糊特效 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999; /* 確保在最上層 */
-            opacity: 1;
-            transition: opacity 0.4s ease;
-        }
-        .notice-box {
-            background-color: #ffffff;
-            width: 90%;
-            max-width: 500px;
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            text-align: center;
-            transform: scale(1);
-            transition: transform 0.4s ease;
-        }
-        .notice-title {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-top: 0;
-            margin-bottom: 16px;
-            letter-spacing: 1px;
-        }
-        .notice-content {
-            color: #334155;
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            text-align: left; /* 條列式內容靠左對齊較易閱讀 */
-        }
-        .notice-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 36px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.2);
-            transition: all 0.2s ease;
-        }
-        .notice-btn:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.3);
-        }
+        /* 彈出視窗與反饋按鈕樣式 */
+        .notice-overlay, .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .notice-box, .feedback-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; }
+        .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; margin-top: 15px; }
+        .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
+        textarea { width: 100%; height: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 12px; margin-top: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="notice-overlay" id="noticeOverlay">
     <div class="notice-box">
-        <h2 class="notice-title">📢 網站使用聲明</h2>
-        <div class="notice-content">
-            <p>歡迎光臨本收藏庫！進入網站前請先閱讀以下須知：</p>
-            <ul>
-                <li><strong>非營利性質：</strong>本網站純屬個人學術與興趣收藏紀錄，<strong>絕非營利用途</strong>。</li>
-                <li><strong>版權聲明：</strong>網站內所有照片、素材皆來自網路公開資源，版權歸原創作者或官方所有。</li>
-                <li><strong>禁止商用：</strong>任何瀏覽者<strong>亦不可將此網站內容或作為任何盈利、商業用途</strong>。</li>
-            </ul>
+        <h2 style="color:var(--primary-color)">📢 網站使用聲明</h2>
+        <div style="text-align:left; font-size:0.95rem; line-height:1.6">
+            <p>本網站為個人學術興趣收藏，非營利用途。所有內容來自網路，版權歸原創者所有，禁止商用。</p>
         </div>
         <button class="notice-btn" id="closeNoticeBtn">我已了解並同意</button>
+    </div>
+</div>
+
+<button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
+<div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
+    <div class="feedback-box">
+        <h3>💡 給我們意見</h3>
+        <form id="feedbackForm">
+            <textarea id="feedbackText" placeholder="請輸入您的建議..." required></textarea>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button type="button" class="notice-btn" style="background:#64748b" id="closeFeedbackBtn">取消</button>
+                <button type="submit" class="notice-btn">送出</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -278,215 +88,73 @@
     <div class="header-subtitle">ITZY 專輯與周邊收藏實拍紀錄庫</div>
 </div>
 
-<div class="slider-container" id="slider">
-</div>
+<div class="slider-container" id="slider"></div>
 
 <div class="search-container">
-    <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋專輯或官方周邊...">
+    <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋...">
 </div>
 
-<div class="status-text" id="statusCount">目前顯示： 0 筆資料</div>
-
-<div class="grid-container" id="productsGrid">
-    <div class="no-results" id="noDataMsg">❌ 找不到相符的周邊商品，換個關鍵字試試吧！</div>
-</div>
+<div class="grid-container" id="productsGrid"></div>
 
 <script>
-    // ====== 0. 【新功能：免責聲明彈窗邏輯】 ======
+    // 1. 彈窗邏輯
     const noticeOverlay = document.getElementById('noticeOverlay');
-    const closeNoticeBtn = document.getElementById('closeNoticeBtn');
+    document.getElementById('closeNoticeBtn').onclick = () => noticeOverlay.style.display = 'none';
 
-    closeNoticeBtn.addEventListener('click', () => {
-        // 點擊按鈕後，讓視窗淡出並消失
-        noticeOverlay.style.opacity = '0';
-        setTimeout(() => {
-            noticeOverlay.style.display = 'none';
-        }, 400); // 400毫秒後完全從畫面上拔除，對應 CSS transition 時間
-    });
+    // 2. 回饋功能邏輯
+    const feedbackOverlay = document.getElementById('feedbackOverlay');
+    document.getElementById('openFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'flex';
+    document.getElementById('closeFeedbackBtn').onclick = () => feedbackOverlay.style.display = 'none';
+    document.getElementById('feedbackForm').onsubmit = (e) => {
+        e.preventDefault();
+        alert('感謝您的回饋！');
+        feedbackOverlay.style.display = 'none';
+    };
 
-    // 💡 輪播資料庫
+    // 3. 輪播資料
     const bannerMediaFiles = [
-        { 
-            url: "./video/IMG_4869.jpg", 
-            objectPosition: "center center", 
-            filter: "brightness(1)",         
-            link: "detail.html?id=motto"     
-        },              
-        { 
-            url: "./video/IMG_4870.jpg", 
-            objectPosition: "center 0%", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4923.jpg", 
-            objectPosition: "center center", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4926.jpg", 
-            objectPosition: "center center", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4928.jpg", 
-            objectPosition: "center center", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4932.jpg", 
-            objectPosition: "center 0%", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4933.jpg", 
-            objectPosition: "center 30%", 
-            filter: "brightness(1)",
-            link: "" 
-        },
-        { 
-            url: "./video/IMG_4934.jpg", 
-            objectPosition: "center 0%", 
-            filter: "brightness(1)",
-            link: "" 
-        }
+        { url: "./video/IMG_4869.jpg" }, { url: "./video/IMG_4870.jpg" }, { url: "./video/IMG_4923.jpg" },
+        { url: "./video/IMG_4926.jpg" }, { url: "./video/IMG_4928.jpg" }, { url: "./video/IMG_4932.jpg" },
+        { url: "./video/IMG_4933.jpg" }, { url: "./video/IMG_4934.jpg" }
     ];
 
-    // 💡 商品核心資料庫
-    const itzyDatabase = [
-        {
-            id: "motto",
-            title: "Motto (Mini Album)",
-            type: "album",
-            typeName: "官方專輯",
-            date: "2026.05.18",
-            desc: "ITZY 的第十二張迷你專輯。",
-            image: "./Motto/Motto.jpg"  
-        },
-        {
-            id: "lightring",
-            title: "ITZY 官方應援棒 Ver.2",
-            type: "goods",
-            typeName: "官方周邊",
-            date: "官方常售商品",
-            desc: "別具特色的環形應援燈二代！支援中控幻彩變色與精緻外盒包裝。",
-            image: "./Motto/lightring_1.jpg" 
-        }
-    ];
-
-    // ====== 1. 隨機播放輪播功能邏輯 ======
     const sliderContainer = document.getElementById('slider');
-    const firstActiveIndex = Math.floor(Math.random() * bannerMediaFiles.length);
-
-    bannerMediaFiles.forEach((fileObj, index) => {
+    let currentSlide = 0;
+    bannerMediaFiles.forEach((f, i) => {
         const item = document.createElement('div');
-        item.className = index === firstActiveIndex ? 'slider-item active' : 'slider-item';
-        
-        let mediaHtml = "";
-        if (fileObj.url.endsWith('.mp4')) {
-            mediaHtml = `<video src="${fileObj.url}" autoplay loop muted playsinline></video>`;
-        } else {
-            mediaHtml = `<img src="${fileObj.url}" alt="Banner ${index + 1}">`;
-        }
-
-        item.innerHTML = mediaHtml;
-
-        const mediaElement = item.querySelector('img, video');
-        if (mediaElement) {
-            if (fileObj.objectPosition) mediaElement.style.objectPosition = fileObj.objectPosition;
-            if (fileObj.filter) mediaElement.style.filter = fileObj.filter;
-        }
-
+        item.className = i === 0 ? 'slider-item active' : 'slider-item';
+        item.innerHTML = `<img src="${f.url}">`;
         sliderContainer.appendChild(item);
     });
 
-    let currentSlide = firstActiveIndex;
     const slides = document.querySelectorAll('.slider-item');
-    let slideTimer = null; 
-
-    // 💡 切換下一張隨機圖片邏輯
-    function changeToNextRandomSlide() {
+    function nextSlide() {
         slides[currentSlide].classList.remove('active');
-        let nextSlide;
-        do {
-            nextSlide = Math.floor(Math.random() * slides.length);
-        } while (nextSlide === currentSlide);
-        currentSlide = nextSlide;
+        currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
     }
+    sliderContainer.onclick = nextSlide;
+    setInterval(nextSlide, 4000);
 
-    // 💡 啟動自動輪播計時器
-    function startAutoSlide() {
-        if (slides.length > 1) {
-            slideTimer = setInterval(() => {
-                changeToNextRandomSlide();
-            }, 4000); 
-        }
-    }
-
-    // 💡 重置計時器
-    function resetSlideTimer() {
-        clearInterval(slideTimer);
-        startAutoSlide();
-    }
-
-    // 💡 監聽輪播看板的點擊事件
-    sliderContainer.addEventListener('click', (e) => {
-        changeToNextRandomSlide();
-        resetSlideTimer();
-    });
-
-    // 初始化自動輪播
-    startAutoSlide();
-
-    // ====== 2. 搜尋與商品網格渲染邏輯 ======
-    const productsGrid = document.getElementById('productsGrid');
-    const searchBox = document.getElementById('searchBox');
-    const statusCount = document.getElementById('statusCount');
-    const noDataMsg = document.getElementById('noDataMsg');
-
+    // 4. 商品資料與搜尋邏輯 (略)
+    const itzyDatabase = [
+        {id: "motto", title: "Motto (Mini Album)", type: "album", typeName: "官方專輯", date: "2026.05.18", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/Motto.jpg"},
+        {id: "lightring", title: "ITZY 官方應援棒 Ver.2", type: "goods", typeName: "官方周邊", date: "官方常售商品", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
+    ];
+    
     function renderItems(items) {
-        const cards = productsGrid.querySelectorAll('.item-card');
-        cards.forEach(card => card.remove());
-        statusCount.innerText = `目前顯示： ${items.length} 筆資料`;
-
-        if (items.length === 0) {
-            noDataMsg.style.display = 'block';
-            return;
-        }
-        noDataMsg.style.display = 'none';
-
-        items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-
-            card.innerHTML = `
-                <a class="img-link" href="detail.html?id=${item.id}">
-                    <img src="${item.image}" alt="${item.title}">
-                </a>
-                <div class="item-info">
-                    <span class="item-type type-${item.type}">${item.typeName}</span>
-                    <h3 class="item-title">${item.title}</h3>
-                    <div class="item-date">日期: ${item.date}</div>
-                    <p class="item-desc">${item.desc}</p>
-                </div>
-            `;
-            productsGrid.appendChild(card);
-        });
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = items.map(item => `
+            <div class="item-card">
+                <a class="img-link" href="detail.html?id=${item.id}"><img src="${item.image}"></a>
+                <div class="item-info"><h3>${item.title}</h3><p>${item.desc}</p></div>
+            </div>
+        `).join('');
     }
-
-    searchBox.addEventListener('input', (event) => {
-        const keyword = event.target.value.toLowerCase().trim();
-        const filteredData = itzyDatabase.filter(item => {
-            return item.title.toLowerCase().includes(keyword) || item.desc.toLowerCase().includes(keyword);
-        });
-        renderItems(filteredData);
-    });
-
+    document.getElementById('searchBox').oninput = (e) => {
+        const val = e.target.value.toLowerCase();
+        renderItems(itzyDatabase.filter(i => i.title.toLowerCase().includes(val)));
+    };
     renderItems(itzyDatabase);
 </script>
 
