@@ -40,17 +40,14 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000;
         }
-        /* 🎯 將 notice-box 內的字體全部設為粗體 */
         .notice-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
         .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; font-family: inherit; }
 
         /* 🔔 懸浮回饋按鈕 */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
         .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
-        /* 🎯 將 feedback-box 內的字體全部設為粗體 */
         .feedback-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; font-weight: bold; }
         
-        /* 讓輸入和文字區域也繼承主字體 */
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; resize: none; font-family: inherit; font-weight: inherit; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; font-family: inherit; font-weight: bold; }
         .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
@@ -58,14 +55,18 @@
         /* 原有設計 */
         .header-section { text-align: center; padding: 50px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1); }
+        .header-subtitle { color: var(--text-muted); font-size: 1.05rem; font-weight: 500; letter-spacing: 1px; }
 
         .search-container { margin: 0 auto 40px auto; position: relative; max-width: 600px; }
-        
-        /* 讓搜尋框也繼承主字體 */
-        .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; font-family: inherit; }
+        .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; font-family: inherit; outline: none; transition: all 0.3s; }
+        .search-input:focus { border-color: var(--primary-color); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.1); }
 
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
-        .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; transition: transform 0.3s; }
+        .item-card:hover { transform: translateY(-5px); }
+        .img-link { display: block; overflow: hidden; }
+        .img-link img { transition: transform 0.3s; }
+        .item-card:hover .img-link img { transform: scale(1.04); }
 
         /* 🔔 社群帳號連結區塊與共同樣式 */
         .social-links {
@@ -104,6 +105,38 @@
         .yt-btn { color: #ef4444; background: #fef2f2; border: 1px solid #fecaca; }
         .x-btn { color: #0f172a; background: #f8fafc; border: 1px solid #e2e8f0; }
         .fb-btn { color: #1877f2; background: #f0f7ff; border: 1px solid #d0e7ff; }
+
+        /* ✍️ 新增：圖片投稿專區樣式 (全部加粗) */
+        .upload-section {
+            max-width: 600px; margin: 40px auto 20px auto; background: var(--card-bg);
+            padding: 35px; border-radius: 24px; border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15,23,42,0.04); font-weight: bold;
+        }
+        .upload-title { font-size: 1.5rem; color: var(--primary-color); font-weight: 800; text-align: center; margin-bottom: 8px; }
+        .upload-subtitle { font-size: 0.92rem; color: var(--text-muted); text-align: center; margin-bottom: 25px; font-weight: bold; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; text-align: left; }
+        .form-label { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 8px; }
+        
+        /* 檔案上傳框 */
+        .file-dropzone {
+            border: 2px dashed #cbd5e1; border-radius: 14px; padding: 25px 15px;
+            text-align: center; cursor: pointer; background-color: #f8fafc;
+            transition: all 0.3s; position: relative;
+        }
+        .file-dropzone:hover { border-color: var(--primary-color); background-color: #fff1f2; }
+        .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .dropzone-text { color: var(--text-muted); font-size: 0.92rem; font-weight: bold; }
+        .dropzone-text b { color: var(--primary-color); }
+        
+        /* 圖片即時預覽 */
+        .preview-container { margin-top: 15px; display: none; justify-content: center; }
+        .preview-img { max-width: 100%; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .form-textarea { width: 100%; height: 110px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-size: 0.95rem; font-family: inherit; font-weight: bold; resize: none; transition: border-color 0.3s; box-sizing: border-box; }
+        .form-textarea:focus { border-color: var(--primary-color); }
+        .submit-contrib-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 12px; font-size: 1.05rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: all 0.3s; font-family: inherit; margin-top: 5px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15); }
+        .submit-contrib-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        .submit-contrib-btn:disabled { background-color: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
     </style>
 </head>
 <body>
@@ -161,11 +194,36 @@
     </div>
 </div>
 
-<div class="search-container">
+<div class="search-container" style="margin-top: 35px;">
     <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋專輯或官方周邊...">
 </div>
 
 <div class="grid-container" id="productsGrid"></div>
+
+<div class="upload-section">
+    <div class="upload-title">📸 實拍周邊投稿專區</div>
+    <div class="upload-subtitle">歡迎 MIDZY 們提供自己拍攝的精美照片與說明，幫忙豐富紀錄庫！</div>
+    
+    <form id="contribForm" onsubmit="handleContributionSubmit(event)">
+        <div class="form-group">
+            <label class="form-label">上傳周邊實拍照</label>
+            <div class="file-dropzone">
+                <div class="dropzone-text" id="dropzoneText">拖曳照片到這裡，或 <b>點擊瀏覽檔案</b></div>
+                <input type="file" id="contribFile" accept="image/*" required onchange="handleImagePreview(this)">
+            </div>
+            <div class="preview-container" id="previewContainer">
+                <img src="" id="imagePreview" class="preview-img" alt="圖片預覽">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">圖片細節說明</label>
+            <textarea id="contribDesc" class="form-textarea" placeholder="請輸入這張實拍照的說明（例如：Motto專輯線下簽售小卡正面、應援棒二代按鈕細節...）" required></textarea>
+        </div>
+
+        <button type="submit" id="submitContribBtn" class="submit-contrib-btn">確認送出投稿</button>
+    </form>
+</div>
 
 <script>
     // 1. 同意後邏輯
@@ -243,6 +301,75 @@
 
     // 初始載入渲染商品列表
     renderItems(itzyDatabase);
+
+    // ✍️ 5. 新增投稿功能：圖片選擇後即時顯示預覽
+    function handleImagePreview(input) {
+        const file = input.files[0];
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const dropzoneText = document.getElementById('dropzoneText');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'flex'; // 顯示預覽框
+                dropzoneText.innerHTML = `已選取：<b>${file.name}</b> (點擊可更換)`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewContainer.style.display = 'none';
+            dropzoneText.innerHTML = `拖曳照片到這裡，或 <b>點擊瀏覽檔案</b>`;
+        }
+    }
+
+    // ✍️ 6. 新增投稿功能：送出表單至後端反饋 API
+    function handleContributionSubmit(event) {
+        event.preventDefault();
+
+        const fileInput = document.getElementById('contribFile');
+        const descInput = document.getElementById('contribDesc');
+        const submitBtn = document.getElementById('submitContribBtn');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('請選擇要投稿的照片檔案喔！');
+            return;
+        }
+
+        // 鎖定按鈕防止重複點擊
+        submitBtn.disabled = true;
+        submitBtn.innerText = '投稿上傳中...';
+
+        // 建立 FormData 用於打包多媒體檔案與文字說明
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('description', descInput.value.trim());
+
+        // 打到與你原本系統同架構的實拍回饋後端端點
+        fetch('https://itzy-py-production.up.railway.app/api/feedback', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('🎉 謝謝 MIDZY 的熱心投稿！照片與實拍說明已成功送出。');
+                // 成功後重設表單與狀態
+                document.getElementById('contribForm').reset();
+                document.getElementById('previewContainer').style.display = 'none';
+                document.getElementById('dropzoneText').innerHTML = `拖曳照片到這裡，或 <b>點擊瀏覽檔案</b>`;
+            } else {
+                alert('伺服器接收失敗，請確認後端服務是否正常運作。');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('投稿失敗，請檢查網路連線或稍後再試。');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '確認送出投稿';
+        });
+    }
 </script>
 
 </body>
