@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 專輯與周邊紀錄庫</title>
     <style>
+        /* --- 1. 全域 CSS 變數定義 (方便統一管理配色) --- */
         :root {
             --primary-color: #e11d48;
             --primary-hover: #be123c;
@@ -14,8 +15,8 @@
             --text-muted: #64748b;
         }
 
+        /* --- 2. 基礎頁面樣式設定 --- */
         body {
-            /* 🎯 關鍵：英文 Times New Roman 排前面，中文標楷體排後面 */
             font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif;
             max-width: 1200px;    
             margin: 0 auto 60px auto;
@@ -25,7 +26,7 @@
             line-height: 1.5;
         }
 
-        /* 🔔 跑馬燈樣式 (初始隱藏) */
+        /* --- 3. 頁面頂部跑馬燈公告樣式 --- */
         .notice-bar {
             background-color: #fff1f2; color: var(--primary-color); padding: 10px 0;
             overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600;
@@ -35,7 +36,7 @@
         .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* 🔔 彈出視窗樣式 (包含文字全部加粗) */
+        /* --- 4. 網站使用聲明彈出層 (進入網站時跳出) --- */
         .notice-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000;
@@ -43,59 +44,25 @@
         .notice-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
         .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; font-family: inherit; }
 
-        /* 🔔 懸浮回饋按鈕 */
+        /* --- 5. 懸浮回饋按鈕與意見回饋表單樣式 --- */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
         .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
         .feedback-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; font-weight: bold; }
-        
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; resize: none; font-family: inherit; font-weight: inherit; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; font-family: inherit; font-weight: bold; }
         .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
 
-        /* 原有設計 */
+        /* --- 6. 標題與社交連結區塊 --- */
         .header-section { text-align: center; padding: 50px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1); }
         .header-subtitle { color: var(--text-muted); font-size: 1.05rem; font-weight: 500; letter-spacing: 1px; }
 
-        /* 🌌 圖片隨機輪播框樣式區區 */
-        .carousel-container {
-            max-width: 950px;
-            margin: 35px auto 0 auto;
-            position: relative;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-            aspect-ratio: 16 / 7; /* 控制優雅的橫幅比例 */
-            background-color: #e2e8f0;
-        }
-        @media (max-width: 600px) {
-            .carousel-container { aspect-ratio: 16 / 9; }
-        }
-        .carousel-slide {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.8s ease-in-out;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .carousel-slide.active { opacity: 1; z-index: 1; }
-        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* 輪播控制按鈕 */
-        .carousel-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.75); color: var(--text-main);
-            border: none; width: 45px; height: 45px; border-radius: 50%;
-            font-size: 22px; cursor: pointer; z-index: 10; transition: all 0.2s;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .carousel-btn:hover { background: white; color: var(--primary-color); transform: translateY(-50%) scale(1.05); }
-        .carousel-btn.prev { left: 20px; }
-        .carousel-btn.next { right: 20px; }
-
-        .search-container { margin: 0 auto 40px auto; position: relative; max-width: 600px; }
+        /* --- 7. 搜尋列樣式 --- */
+        .search-container { margin: 40px auto 40px auto; position: relative; max-width: 600px; }
         .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; font-family: inherit; outline: none; transition: all 0.3s; }
         .search-input:focus { border-color: var(--primary-color); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.1); }
 
+        /* --- 8. 商品卡片網格佈局 (Grid) --- */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; margin-bottom: 50px; }
         .item-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; transition: transform 0.3s; }
         .item-card:hover { transform: translateY(-5px); }
@@ -103,120 +70,14 @@
         .img-link img { transition: transform 0.3s; }
         .item-card:hover .img-link img { transform: scale(1.04); }
 
-        /* 🔔 社群帳號連結區塊與共同樣式 */
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            max-width: 950px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .social-links a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            transition: all 0.2s ease-in-out;
-        }
-        .social-links a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.08);
-        }
-        .social-links svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-        
+        /* --- 9. 社交按鈕樣式 --- */
+        .social-links { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; max-width: 950px; margin-left: auto; margin-right: auto; }
+        .social-links a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; }
+        .social-links a:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.08); }
         .ig-btn { color: #ec4899; background: #fdf2f8; border: 1px solid #fbcfe8; }
         .yt-btn { color: #ef4444; background: #fef2f2; border: 1px solid #fecaca; }
         .x-btn { color: #0f172a; background: #f8fafc; border: 1px solid #e2e8f0; }
         .fb-btn { color: #1877f2; background: #f0f7ff; border: 1px solid #d0e7ff; }
-
-        /* 🛠️ 觸發投稿表單的按鈕區塊 */
-        .action-bar {
-            text-align: center;
-            margin: 40px 0 20px 0;
-        }
-        .trigger-upload-btn {
-            background-color: #fff1f2;
-            color: var(--primary-color);
-            border: 2px solid #fecaca;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-        }
-        .trigger-upload-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(225, 29, 72, 0.2);
-        }
-
-        /* ✍️ 投稿專區彈出視窗燈箱 (Modal Layer) */
-        .upload-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 10001;
-        }
-        .upload-section {
-            background: var(--card-bg); width: 90%; max-width: 550px;
-            padding: 30px; border-radius: 24px; font-weight: bold;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative; animation: modalFadeIn 0.3s ease;
-        }
-        @keyframes modalFadeIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .close-upload-btn {
-            position: absolute; top: 20px; right: 20px; background: none; border: none;
-            font-size: 24px; color: var(--text-muted); cursor: pointer; transition: color 0.2s;
-        }
-        .close-upload-btn:hover { color: var(--primary-color); }
-
-        .upload-title { font-size: 1.4rem; color: var(--primary-color); font-weight: 800; text-align: center; margin-bottom: 6px; }
-        .upload-subtitle { font-size: 0.88rem; color: var(--text-muted); text-align: center; margin-bottom: 20px; font-weight: bold; }
-        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; text-align: left; }
-        .form-label { font-size: 0.95rem; font-weight: bold; color: var(--text-main); margin-bottom: 6px; }
-        
-        /* 檔案上傳框 */
-        .file-dropzone {
-            border: 2px dashed #cbd5e1; border-radius: 14px; padding: 20px 15px;
-            text-align: center; cursor: pointer; background-color: #f8fafc;
-            transition: all 0.3s; position: relative;
-        }
-        .file-dropzone:hover { border-color: var(--primary-color); background-color: #fff1f2; }
-        .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .dropzone-text { color: var(--text-muted); font-size: 0.88rem; font-weight: bold; }
-        .dropzone-text b { color: var(--primary-color); }
-        
-        /* 圖片即時預覽 */
-        .preview-container { margin-top: 12px; display: none; justify-content: center; }
-        .preview-img { max-width: 100%; max-height: 150px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-        .form-textarea { width: 100%; height: 95px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; font-size: 0.92rem; font-family: inherit; font-weight: bold; resize: none; transition: border-color 0.3s; box-sizing: border-box; }
-        .form-textarea:focus { border-color: var(--primary-color); }
-        .submit-contrib-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 12px; font-size: 1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: all 0.3s; font-family: inherit; margin-top: 5px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15); }
-        .submit-contrib-btn:hover { background-color: var(--primary-hover); }
-        .submit-contrib-btn:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
     </style>
 </head>
 <body>
@@ -238,6 +99,7 @@
 </div>
 
 <button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
+
 <div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
     <div class="feedback-box">
         <h3>💡 給我們意見</h3>
@@ -250,96 +112,61 @@
 <div class="header-section">
     <h1>ITZY! MIDZY! 날자!</h1>
     <div class="header-subtitle">ITZY 專輯與周邊紀錄庫</div>
-    
     <div class="social-links">
-        <a href="https://www.instagram.com/itzy.all.in.us?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="ig-btn">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-            Instagram
-        </a>
-
-        <a href="https://www.youtube.com/@ITZY" target="_blank" class="yt-btn">
-            <svg viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            YouTube
-        </a>
-
-        <a href="https://x.com/ITZYofficial" target="_blank" class="x-btn">
-            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            X (Twitter)
-        </a>
-        
-        <a href="https://www.facebook.com/OfficialITZY" target="_blank" class="fb-btn">
-            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            Facebook
-        </a>
+        <a href="https://www.instagram.com/itzy.all.in.us?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="ig-btn">Instagram</a>
+        <a href="https://www.youtube.com/@ITZY" target="_blank" class="yt-btn">YouTube</a>
+        <a href="https://x.com/ITZYofficial" target="_blank" class="x-btn">X (Twitter)</a>
+        <a href="https://www.facebook.com/OfficialITZY" target="_blank" class="fb-btn">Facebook</a>
     </div>
 </div>
 
-<div class="carousel-container">
-    <button class="carousel-btn prev" id="prevSlide">‹</button>
-    <div id="carouselWrapper"></div>
-    <button class="carousel-btn next" id="nextSlide">›</button>
-</div>
-
-<div class="search-container" style="margin-top: 35px;">
+<div class="search-container">
     <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋專輯或官方周邊...">
 </div>
 
 <div class="grid-container" id="productsGrid"></div>
 
 <script>
-    // 1. 同意後邏輯
+    // --- 1. 同意聲明邏輯：關閉視窗並顯示跑馬燈 ---
     document.getElementById('agreeBtn').onclick = () => {
         document.getElementById('noticeOverlay').style.display = 'none';
         document.getElementById('noticeBar').style.display = 'block';
     };
 
-    // 2. 回饋功能
+    // --- 2. 意見回饋表單邏輯 ---
     document.getElementById('openFeedbackBtn').onclick = () => document.getElementById('feedbackOverlay').style.display = 'flex';
     document.getElementById('closeFeedbackBtn').onclick = () => document.getElementById('feedbackOverlay').style.display = 'none';
     
     document.getElementById('submitFeedback').onclick = () => {
         const text = document.getElementById('feedbackText').value;
         const submitBtn = document.getElementById('submitFeedback');
+        if (!text.trim()) { alert('請輸入意見內容再送出喔！'); return; }
         
-        if (!text.trim()) {
-            alert('請輸入意見內容再送出喔！');
-            return;
-        }
-
         submitBtn.disabled = true;
         submitBtn.innerText = '傳送中...';
-
+        
         const formData = new FormData();
         formData.append('entry.439407631', text); 
-
-        const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScbcDt-I3T4rqcv86Ep_zJbuPOiskYJXwCZUj0iW9qdCDLozg/formResponse';
-
-        fetch(googleFormUrl, {
-            method: 'POST',
-            body: formData,
-            mode: 'no-cors'
+        
+        // 使用 fetch 發送資料到 Google 表單
+        fetch('https://docs.google.com/forms/d/e/1FAIpQLScbcDt-I3T4rqcv86Ep_zJbuPOiskYJXwCZUj0iW9qdCDLozg/formResponse', {
+            method: 'POST', body: formData, mode: 'no-cors'
         })
-        .then(() => {
-            alert('感謝您的回饋！意見已成功送出。');
-            document.getElementById('feedbackText').value = '';
-            document.getElementById('feedbackOverlay').style.display = 'none';
+        .then(() => { 
+            alert('感謝您的回饋！'); 
+            document.getElementById('feedbackText').value = ''; 
+            document.getElementById('feedbackOverlay').style.display = 'none'; 
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('傳送失敗，請稍後再試。');
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerText = '送出';
-        });
+        .finally(() => { submitBtn.disabled = false; submitBtn.innerText = '送出'; });
     };
 
-    // 3. 商品資料庫
+    // --- 3. 商品資料庫：儲存網站的所有項目 ---
     const itzyDatabase = [
         {id: "motto", title: "Motto (Mini Album)", type: "album", typeName: "官方專輯", date: "2026.05.18", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/motto2.jpg"},
         {id: "lightring", title: "ITZY 官方應援棒 Ver.2", type: "goods", typeName: "官方周邊", date: "官方常售商品", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
     ];
     
+    // --- 4. 渲染函式：將陣列資料轉換為 HTML 顯示在畫面上 ---
     function renderItems(items) {
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = items.map(item => `
@@ -350,7 +177,7 @@
         `).join('');
     }
 
-    // 4. 搜尋功能連動
+    // --- 5. 搜尋功能：監聽輸入事件，即時過濾顯示項目 ---
     document.getElementById('searchBox').oninput = function() {
         const keyword = this.value.toLowerCase().trim();
         const filtered = itzyDatabase.filter(item => 
@@ -360,80 +187,8 @@
         renderItems(filtered);
     };
 
-    // 初始載入渲染商品列表
+    // --- 6. 網頁初始化：載入時渲染完整列表 ---
     renderItems(itzyDatabase);
-
-    // 🌌 5. 升級：圖片隨機輪播庫的 JS 驅動核心（改為物件陣列，可自訂 position）
-    // position 的寫法代表「水平位置 垂直位置」。 
-    // 例如 "center center" 是全置中、"center top" 是靠上、"center 20%" 是稍微偏上。
-    const bannerImages = [
-        { src: "./video/IMG_4869.jpg", position: "center center" },
-        { src: "./video/IMG_4923.jpg", position: "center 60%" },
-        { src: "./video/IMG_4926.jpg", position: "center 30%" }, // 30% 代表稍微露出上方多一點
-        { src: "./video/IMG_4932.jpg", position: "center 20%" }, // bottom 靠下對齊
-        { src: "./video/IMG_4933.jpg", position: "center 40%" },
-        { src: "./video/IMG_4934.jpg", position: "center 20%" }
-    ];
-
-    // 隨機決定第一張初始圖片的索引
-    let currentSlideIdx = Math.floor(Math.random() * bannerImages.length);
-    let carouselTimer = null;
-
-    function initCarousel() {
-        const wrapper = document.getElementById('carouselWrapper');
-        // 生成所有輪播投影片 HTML，並注入手動調整的 object-position
-        wrapper.innerHTML = bannerImages.map((imgObj, idx) => `
-            <div class="carousel-slide ${idx === currentSlideIdx ? 'active' : ''}">
-                <img src="${imgObj.src}" alt="ITZY Banner ${idx + 1}" style="object-position: ${imgObj.position || 'center center'};">
-            </div>
-        `).join('');
-
-        startAutoPlay();
-    }
-
-    function showSlide(index) {
-        const slides = document.querySelectorAll('.carousel-slide');
-        if (slides.length === 0) return;
-
-        // 邊界檢查與循環處理
-        if (index >= slides.length) currentSlideIdx = 0;
-        else if (index < 0) currentSlideIdx = slides.length - 1;
-        else currentSlideIdx = index;
-
-        // 移除所有 active，只給當前的投影片加上
-        slides.forEach((slide, idx) => {
-            if (idx === currentSlideIdx) slide.classList.add('active');
-            else slide.classList.remove('active');
-        });
-    }
-
-    function changeSlide(step) {
-        stopAutoPlay(); // 使用者手動點擊時，先重設計時器避免快速切換
-        showSlide(currentSlideIdx + step);
-        startAutoPlay();
-    }
-
-    function startAutoPlay() {
-        if (!carouselTimer) {
-            carouselTimer = setInterval(() => {
-                showSlide(currentSlideIdx + 1);
-            }, 4000); // 每 4 秒自動切換
-        }
-    }
-
-    function stopAutoPlay() {
-        if (carouselTimer) {
-            clearInterval(carouselTimer);
-            carouselTimer = null;
-        }
-    }
-
-    // 綁定輪播按鈕事件
-    document.getElementById('prevSlide').onclick = () => changeSlide(-1);
-    document.getElementById('nextSlide').onclick = () => changeSlide(1);
-
-    // 啟動輪播
-    initCarousel();
 </script>
 
 </body>
