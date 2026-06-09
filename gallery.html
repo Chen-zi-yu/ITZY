@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 細節相簿展示</title>
     <style>
+        /* 採用與你原本設計完全一致的優雅粉紅配色與質感 */
         :root {
             --primary-color: #e11d48;
             --bg-color: #f8fafc;
             --text-main: #0f172a;
             --text-muted: #64748b;
         }
+
         body {
             font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
             max-width: 1000px;
@@ -20,7 +22,7 @@
             color: var(--text-main);
         }
 
-        /* 返回按鈕 */
+        /* 返回按鈕（維持原本 detail.html 的優雅圓角與陰影樣式） */
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -86,7 +88,7 @@
             border-top: 1px solid #f1f5f9;
         }
 
-        /* 點擊放大燈箱 (Lightbox) */
+        /* 點擊放大燈箱 (Lightbox) ── 完美移植你原本超讚的放大功能 */
         .lightbox {
             position: fixed;
             top: 0;
@@ -129,7 +131,7 @@
 </head>
 <body>
 
-<a id="back-link" href="index.html" class="back-btn">⬅️ 返回上一頁</a>
+<a id="back-link" href="index.html" class="back-btn">⬅️ 返回詳情頁</a>
 
 <div class="album-header">
     <h1 id="album-title">正在載入相簿...</h1>
@@ -143,51 +145,46 @@
 </div>
 
 <script>
-    // 這裡獨立管理所有分類相簿內的真實照片路徑
+    // 💡 這裡獨立管理所有分類相簿的圖片與路徑（注意大小寫需與實際資料夾一致）
     const photosDatabase = {
         "motto": {
             "popup": {
-                title: "Motto - 快閃店限定相簿展示",
+                title: "Motto - 快閃店",
                 images: [
                     { img: "./Motto/pop_up store1.jpg", text: "快閃店限定專輯小卡牆全景" },
                     { img: "./Motto/pop_up store2.jpg", text: "現場專屬明信片與周邊展示區" }
                 ]
             },
             "offline": {
-                title: "Motto - 線下慶祝活動紀錄",
+                title: "Motto - 線下簽售",
                 images: [
-                    { img: "./Motto/IMG_5365.jpeg", text: "ms2.0線下蛋糕" }
+                    { img: "./Motto/wmld.jpg", text: "wm幸運卡" }
                 ]
             }
         },
         "lightring": {
-            "product": {
-                title: "應援棒 Ver.2 - 外觀細節實拍",
+            "all": {
+                title: "官方應援棒 Ver.2 - 細節展示",
                 images: [
                     { img: "./Motto/lightring_1.jpg", text: "應援棒主體與發光環特寫" },
-                    { img: "./Motto/lightring_2.jpg", text: "防滑手把與中央控制按鈕細節" }
-                ]
-            },
-            "packaging": {
-                title: "應援棒 Ver.2 - 官方質感外盒",
-                images: [
+                    { img: "./Motto/lightring_2.jpg", text: "防滑手把與中央控制按鈕細節" },
                     { img: "./Motto/lightring_box.jpg", text: "官方原裝質感外包裝盒" }
                 ]
             }
         }
     };
 
-    // 1. 解析網址後方的 ?id=motto&album=popup 參數
+    // 1. 解析網址參數 (例如：gallery.html?id=motto&album=popup)
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     const albumId = urlParams.get('album');
 
-    // 2. 讓返回按鈕能精準回到對應的 detail 頁面（例如 detail.html?id=motto）
+    // 2. 讓返回按鈕能精準回到對應的原本 detail 頁面
     if (productId) {
         document.getElementById('back-link').href = `detail.html?id=${productId}`;
     }
 
-    // 3. 撈取資料庫並動態生成照片牆
+    // 3. 撈取獨立相簿資料庫並渲染
     try {
         const currentAlbum = photosDatabase[productId][albumId];
         if (currentAlbum) {
@@ -198,13 +195,13 @@
                 const card = document.createElement('div');
                 card.className = 'photo-card';
                 card.innerHTML = `
-                    <img src="${photo.img}" alt="實拍細節照片" class="zoomable-img">
+                    <img src="${photo.img}" alt="實拍照片" class="zoomable-img">
                     <div class="photo-desc">${photo.text}</div>
                 `;
                 container.appendChild(card);
             });
 
-            // 4. 點擊圖片放大燈箱功能
+            // 4. 點擊圖片放大功能（完美保留原本燈箱邏輯）
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             const zoomableImages = document.querySelectorAll('.zoomable-img');
@@ -224,7 +221,7 @@
             document.getElementById('album-title').innerText = "抱歉，找不到該分組相簿。";
         }
     } catch(e) {
-        document.getElementById('album-title').innerText = "資料讀取失敗。";
+        document.getElementById('album-title').innerText = "相簿資料載入失敗。";
     }
 </script>
 

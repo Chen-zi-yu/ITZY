@@ -1,4 +1,10 @@
-<style>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITZY 周邊 & 專輯搜尋庫</title>
+    <style>
         :root {
             --primary-color: #e11d48;
             --primary-hover: #be123c;
@@ -10,7 +16,7 @@
 
         body {
             font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
-            max-width: 1200px;    /* 👈 修改：原本是 1000px，改為 1200px 讓網頁整體變寬 */
+            max-width: 1200px;    
             margin: 0 auto 60px auto;
             padding: 0 24px;
             background-color: var(--bg-color);
@@ -42,7 +48,7 @@
         .search-container { 
             margin: 35px auto 0 auto; 
             position: relative; 
-            max-width: 600px; /* 👈 修改：稍微加寬搜尋框搭配整體格局 */
+            max-width: 600px; 
         }
         .search-input { 
             width: 100%; 
@@ -69,10 +75,10 @@
             font-weight: 500;
         }
 
-        /* 商品網格與卡片 */
+        /* 🛍️ 商品網格佈局：寬度調整 */
         .grid-container { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 👈 修改：稍微加寬卡片網格 */
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
             gap: 30px; 
         }
         .item-card { 
@@ -91,9 +97,10 @@
             border-color: #e2e8f0;
         }
         
+        /* 🖼️ 照片外框比例 */
         .img-link { 
             width: 100%; 
-            height: 300px; /* 👈 修改：加高卡片圖片高度 */
+            height: 260px; 
             overflow: hidden; 
             display: block; 
             cursor: pointer; 
@@ -154,16 +161,18 @@
             font-size: 1.1rem;
         }
 
-        /* ✨ 修改：自動輪播看板美化 */
+        /* 🎡 輪播看板美化：寬度縮窄、直向拉高 */
         .slider-container {
             width: 100%;
-            height: 600px; /* 👈 修改：原本是 400px，大幅拉高到 600px 讓畫面變大變寬 */
-            margin-top: 25px;
+            max-width: 850px;    
+            height: 520px;       
+            margin: 25px auto 0 auto; 
             border-radius: 24px;
             overflow: hidden;
             position: relative;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
             background-color: #000;
+            cursor: pointer; 
         }
         .slider-item {
             position: absolute;
@@ -182,6 +191,217 @@
         .slider-item img, .slider-item video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 👈 這個屬性是造成人物臉被切到的原因，但它能保證外框被填滿。我們需要更換圖片來配合它。 */
+            object-fit: cover; 
+            object-position: center center; 
         }
     </style>
+</head>
+<body>
+
+<div class="header-section">
+    <h1>ITZY! MIDZY! 날자!</h1>
+    <div class="header-subtitle">ITZY 專輯與周邊收藏實拍紀錄庫</div>
+</div>
+
+<div class="slider-container" id="slider">
+</div>
+
+<div class="search-container">
+    <input type="text" id="searchBox" class="search-input" placeholder="🔍 輸入關鍵字搜尋專輯或官方周邊...">
+</div>
+
+<div class="status-text" id="statusCount">目前顯示： 0 筆資料</div>
+
+<div class="grid-container" id="productsGrid">
+    <div class="no-results" id="noDataMsg">❌ 找不到相符的周邊商品，換個關鍵字試試吧！</div>
+</div>
+
+<script>
+    // 💡 輪播資料庫
+    const bannerMediaFiles = [
+        { 
+            url: "./video/IMG_4869.jpg", 
+            objectPosition: "center center", 
+            filter: "brightness(1)",         
+            link: "detail.html?id=motto"     
+        },              
+        { 
+            url: "./video/IMG_4870.jpg", 
+            objectPosition: "center 0%", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4923.jpg", 
+            objectPosition: "center center", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4926.jpg", 
+            objectPosition: "center center", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4928.jpg", 
+            objectPosition: "center center", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4932.jpg", 
+            objectPosition: "center 0%", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4933.jpg", 
+            objectPosition: "center 30%", 
+            filter: "brightness(1)",
+            link: "" 
+        },
+        { 
+            url: "./video/IMG_4934.jpg", 
+            objectPosition: "center 0%", 
+            filter: "brightness(1)",
+            link: "" 
+        }
+    ];
+
+    // 💡 商品核心資料庫
+    const itzyDatabase = [
+        {
+            id: "motto",
+            title: "Motto (Mini Album)",
+            type: "album",
+            typeName: "官方專輯",
+            date: "2026.05.18",
+            desc: "ITZY 的第十二張迷你專輯。",
+            image: "./Motto/Motto.jpg"  
+        },
+        {
+            id: "lightring",
+            title: "ITZY 官方應援棒 Ver.2",
+            type: "goods",
+            typeName: "官方周邊",
+            date: "官方常售商品",
+            desc: "別具特色的環形應援燈二代！支援中控幻彩變色與精緻外盒包裝。",
+            image: "./Motto/lightring_1.jpg" 
+        }
+    ];
+
+    // ====== 1. 隨機播放輪播功能邏輯 ======
+    const sliderContainer = document.getElementById('slider');
+    const firstActiveIndex = Math.floor(Math.random() * bannerMediaFiles.length);
+
+    bannerMediaFiles.forEach((fileObj, index) => {
+        const item = document.createElement('div');
+        item.className = index === firstActiveIndex ? 'slider-item active' : 'slider-item';
+        
+        let mediaHtml = "";
+        if (fileObj.url.endsWith('.mp4')) {
+            mediaHtml = `<video src="${fileObj.url}" autoplay loop muted playsinline></video>`;
+        } else {
+            mediaHtml = `<img src="${fileObj.url}" alt="Banner ${index + 1}">`;
+        }
+
+        item.innerHTML = mediaHtml;
+
+        const mediaElement = item.querySelector('img, video');
+        if (mediaElement) {
+            if (fileObj.objectPosition) mediaElement.style.objectPosition = fileObj.objectPosition;
+            if (fileObj.filter) mediaElement.style.filter = fileObj.filter;
+        }
+
+        sliderContainer.appendChild(item);
+    });
+
+    let currentSlide = firstActiveIndex;
+    const slides = document.querySelectorAll('.slider-item');
+    let slideTimer = null; 
+
+    // 💡 切換下一張隨機圖片邏輯
+    function changeToNextRandomSlide() {
+        slides[currentSlide].classList.remove('active');
+        let nextSlide;
+        do {
+            nextSlide = Math.floor(Math.random() * slides.length);
+        } while (nextSlide === currentSlide);
+        currentSlide = nextSlide;
+        slides[currentSlide].classList.add('active');
+    }
+
+    // 💡 啟動自動輪播計時器
+    function startAutoSlide() {
+        if (slides.length > 1) {
+            slideTimer = setInterval(() => {
+                changeToNextRandomSlide();
+            }, 4000); 
+        }
+    }
+
+    // 💡 重置計時器
+    function resetSlideTimer() {
+        clearInterval(slideTimer);
+        startAutoSlide();
+    }
+
+    // 💡 【修正：移除點擊跳轉】現在首頁輪播純粹用來切換下一張圖，永遠不會意外跳轉內頁
+    sliderContainer.addEventListener('click', (e) => {
+        changeToNextRandomSlide();
+        resetSlideTimer();
+    });
+
+    // 初始化自動輪播
+    startAutoSlide();
+
+    // ====== 2. 搜尋與商品網格渲染邏輯 ======
+    const productsGrid = document.getElementById('productsGrid');
+    const searchBox = document.getElementById('searchBox');
+    const statusCount = document.getElementById('statusCount');
+    const noDataMsg = document.getElementById('noDataMsg');
+
+    function renderItems(items) {
+        const cards = productsGrid.querySelectorAll('.item-card');
+        cards.forEach(card => card.remove());
+        statusCount.innerText = `目前顯示： ${items.length} 筆資料`;
+
+        if (items.length === 0) {
+            noDataMsg.style.display = 'block';
+            return;
+        }
+        noDataMsg.style.display = 'none';
+
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            card.innerHTML = `
+                <a class="img-link" href="detail.html?id=${item.id}">
+                    <img src="${item.image}" alt="${item.title}">
+                </a>
+                <div class="item-info">
+                    <span class="item-type type-${item.type}">${item.typeName}</span>
+                    <h3 class="item-title">${item.title}</h3>
+                    <div class="item-date">日期: ${item.date}</div>
+                    <p class="item-desc">${item.desc}</p>
+                </div>
+            `;
+            productsGrid.appendChild(card);
+        });
+    }
+
+    searchBox.addEventListener('input', (event) => {
+        const keyword = event.target.value.toLowerCase().trim();
+        const filteredData = itzyDatabase.filter(item => {
+            return item.title.toLowerCase().includes(keyword) || item.desc.toLowerCase().includes(keyword);
+        });
+        renderItems(filteredData);
+    });
+
+    renderItems(itzyDatabase);
+</script>
+
+</body>
+</html>
