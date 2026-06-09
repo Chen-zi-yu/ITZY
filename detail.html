@@ -49,22 +49,41 @@
             border-left: 4px solid #e11d48;
             padding-left: 10px;
         }
+        
+        /* 照片牆網格 */
         .image-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
+        
+        /* 💡 每個圖片+文字的卡片外框 */
         .gallery-item {
             background: white;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
         }
         .gallery-item img {
             width: 100%;
-            height: auto;
+            height: 240px;
+            object-fit: cover; /* 讓細節圖整齊等高 */
             display: block;
+        }
+        
+        /* 📝 新增：內頁圖片下方的文字說明區塊樣式 */
+        .img-caption {
+            padding: 15px;
+            font-size: 0.95rem;
+            color: #4b5563;
+            line-height: 1.4;
+            background-color: #ffffff;
+            border-top: 1px solid #f3f4f6;
+            text-align: center; /* 文字置中 */
+            font-weight: 500;
         }
     </style>
 </head>
@@ -81,17 +100,27 @@
 <div id="gallery" class="image-gallery"></div>
 
 <script>
-    // 💡 這裡的資料庫與圖片路徑，與你的 index.html 完全同步、一字不改
+    // ========================================================
+    // 💡 填寫處：在這裡面為內頁的每張圖片加上特定的文字說明！
+    // ========================================================
     const detailDatabase = {
         "motto": {
             title: "Motto (Mini Album)",
             desc: "ITZY 的第十二張迷你專輯。內含官方概念照與專屬豐富收藏內容。",
-            moreImages: ["./Motto/pop_up store1.jpg", "./Motto/pop_up store2.jpg"]
+            // 這裡改成 { img: "路徑", text: "你想寫的說明文字" }
+            moreImages: [
+                { img: "./Motto/pop_up store1.jpg", text: "快閃店限定專輯小卡牆全景" },
+                { img: "./Motto/pop_up store2.jpg", text: "現場專屬明信片與周邊展示區" }
+            ]
         },
         "lightring": {
             title: "ITZY 官方應援棒 Ver.2",
             desc: "別具特色的環形應援燈二代！支援中控幻彩變色。",
-            moreImages: ["Motto/lightring_1.jpg", "Motto/lightring_2.jpg", "Motto/lightring_box.jpg"]
+            moreImages: [
+                { img: "Motto/lightring_1.jpg", text: "應援棒主體與發光環特寫" },
+                { img: "Motto/lightring_2.jpg", text: "防滑手把與中央控制按鈕細節" },
+                { img: "Motto/lightring_box.jpg", text: "官方原裝質感外包裝盒" }
+            ]
         }
     };
 
@@ -108,11 +137,17 @@
         document.getElementById('desc').innerText = itemData.desc;
 
         const galleryContainer = document.getElementById('gallery');
-        // 跑迴圈把 moreImages 陣列裡的所有圖片路徑動態印出來
-        itemData.moreImages.forEach(imgSrc => {
+        
+        // 4. 跑迴圈把每一組圖片與文字動態印到 HTML 裡面
+        itemData.moreImages.forEach(item => {
             const itemWrap = document.createElement('div');
             itemWrap.className = 'gallery-item';
-            itemWrap.innerHTML = `<img src="${imgSrc}" alt="細節圖">`;
+            
+            // 💡 關鍵：上半部放圖片，下半部塞入說明的文字
+            itemWrap.innerHTML = `
+                <img src="${item.img}" alt="細節圖">
+                <div class="img-caption">${item.text}</div>
+            `;
             galleryContainer.appendChild(itemWrap);
         });
     } else {

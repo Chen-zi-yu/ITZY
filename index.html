@@ -13,7 +13,7 @@
             background-color: #f9fafb;
             color: #111827;
         }
-        .header-section { text-align: center; padding: 40px 0; }
+        .header-section { text-align: center; padding: 40px 0 20px 0; }
         h1 { color: #e11d48; font-size: 2.5rem; margin-bottom: 10px; letter-spacing: 2px; }
         .search-container { margin-top: 25px; position: relative; max-width: 500px; margin-left: auto; margin-right: auto; }
         .search-input { width: 100%; padding: 14px 20px; font-size: 1.1rem; border: 2px solid #e5e7eb; border-radius: 30px; outline: none; }
@@ -23,7 +23,6 @@
         .item-card { background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04); border: 1px solid #f3f4f6; transition: all 0.3s ease; display: flex; flex-direction: column; }
         .item-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
         
-        /* 讓圖片變成可以點擊的超連結 */
         .img-link { width: 100%; height: 260px; overflow: hidden; display: block; cursor: pointer; }
         .img-link img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
         .img-link:hover img { transform: scale(1.05); }
@@ -36,6 +35,39 @@
         .item-date { font-size: 0.85rem; color: #9ca3af; margin-bottom: 10px; }
         .item-desc { font-size: 0.9rem; color: #4b5563; line-height: 1.5; margin: 0; }
         .no-results { grid-column: 1 / -1; text-align: center; padding: 50px 0; color: #9ca3af; display: none; }
+
+        /* ======================================================== */
+        /* ✨ 新增：自動輪播看版 (Slider) CSS 樣式 */
+        /* ======================================================== */
+        .slider-container {
+            width: 100%;
+            height: 380px; /* 看板高度，可自行調整 */
+            margin-top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            background-color: #000;
+        }
+        .slider-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* 1秒淡入淡出效果 */
+            z-index: 1;
+        }
+        .slider-item.active {
+            opacity: 1;
+            z-index: 2;
+        }
+        .slider-item img, .slider-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 讓圖片/影片完美填滿不變形 */
+        }
     </style>
 </head>
 <body>
@@ -43,6 +75,10 @@
 <div class="header-section">
     <h1>👑 ITZY ARCHIVE</h1>
     <p style="color: #4b5563; font-weight: 500;">專輯、周邊與官方商品即時搜尋庫</p>
+
+    <div class="slider-container" id="hero-slider">
+        </div>
+
     <div class="search-container">
         <input type="text" id="search-box" class="search-input" placeholder="輸入關鍵字... (如: Gold, 應援棒)">
     </div>
@@ -55,7 +91,19 @@
 </div>
 
 <script>
-    // 給每筆資料一個獨一無二的 id，並在 moreImages 陣列放你想在內頁展示的其他圖片
+    // ========================================================
+    // 💡 填寫處 1：在這裡放你想放在主頁頂端「自動輪播」的照片或影片路徑
+    // ========================================================
+    const bannerMediaFiles = [
+        "./Motto/motto.jpg",              // 圖片範例
+        "./Motto/pop_up store1.jpg",      // 圖片範例
+        "./Motto/pop_up store2.jpg",      // 圖片範例
+        "./Motto/itzy_teaser.mp4"         // 🎬 影片範例：如果是影片，記得檔名要是 .mp4
+    ];
+
+    // ========================================================
+    // 💡 填寫處 2：原本的 ITZY 商品搜尋庫資料（完全沒改你的圖片名字）
+    // ========================================================
     const itzyDatabase = [
         {
             id: "motto",
@@ -64,8 +112,8 @@
             typeName: "官方專輯",
             date: "2026.05.18",
             desc: "ITZY 的第十二張迷你專輯",
-            image: "./Motto/motto.jpg", // 主頁封面圖
-            moreImages: ["./Motto/pop_up store1.jpg", "./Motto/pop_up store2.jpg"] // 點進去內頁想顯示的所有圖片
+            image: "./Motto/motto.jpg", 
+            moreImages: ["./Motto/pop_up store1.jpg", "./Motto/pop_up store2.jpg"] 
         },
         {
             id: "lightring",
@@ -79,6 +127,44 @@
         }
     ];
 
+    // --------------------------------------------------------
+    // 自動輪播核心 JavaScript 邏輯
+    // --------------------------------------------------------
+    const heroSlider = document.getElementById('hero-slider');
+    
+    // 初始化輪播元件
+    bannerMediaFiles.forEach((src, index) => {
+        const slide = document.createElement('div');
+        slide.className = `slider-item ${index === 0 ? 'active' : ''}`;
+        
+        // 判斷如果副檔名是 mp4 則用 video 標籤，否則用 img 標籤
+        if (src.toLowerCase().endsWith('.mp4')) {
+            slide.innerHTML = `<video src="${src}" autoplay loop muted playsinline></video>`;
+        } else {
+            slide.innerHTML = `<img src="${src}" alt="Banner">`;
+        }
+        heroSlider.appendChild(slide);
+    });
+
+    // 設定每 4000 毫秒 (4秒) 自動切換下一張
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slider-item');
+    
+    if(slides.length > 0) {
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            // 修正：如果切換到影片，確保它有自動播放
+            const video = slides[currentSlide].querySelector('video');
+            if(video) { video.play(); }
+        }, 4000); 
+    }
+
+    // --------------------------------------------------------
+    // 原本的搜尋與卡片渲染邏輯（無更動）
+    // --------------------------------------------------------
     const searchBox = document.getElementById('search-box');
     const productsGrid = document.getElementById('products-grid');
     const statusCount = document.getElementById('status-count');
@@ -99,7 +185,6 @@
             const card = document.createElement('div');
             card.className = 'item-card';
 
-            // 💡 關鍵：將圖片用 <a> 標籤包起來，點擊時會導向 detail.html?id=商品id
             card.innerHTML = `
                 <a class="img-link" href="detail.html?id=${item.id}">
                     <img src="${item.image}" alt="${item.title}">
