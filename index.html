@@ -194,9 +194,84 @@
             object-fit: cover; 
             object-position: center center; 
         }
+
+        /* 🔔 【新功能：免責聲明彈出視窗 CSS】 */
+        .notice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6); /* 半透明深色背景 */
+            backdrop-filter: blur(4px); /* 背景模糊特效 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* 確保在最上層 */
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+        .notice-box {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            transform: scale(1);
+            transition: transform 0.4s ease;
+        }
+        .notice-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .notice-content {
+            color: #334155;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            text-align: left; /* 條列式內容靠左對齊較易閱讀 */
+        }
+        .notice-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.2);
+            transition: all 0.2s ease;
+        }
+        .notice-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.3);
+        }
     </style>
 </head>
 <body>
+
+<div class="notice-overlay" id="noticeOverlay">
+    <div class="notice-box">
+        <h2 class="notice-title">📢 網站使用聲明</h2>
+        <div class="notice-content">
+            <p>歡迎光臨本收藏庫！進入網站前請先閱讀以下須知：</p>
+            <ul>
+                <li><strong>非營利性質：</strong>本網站純屬個人學術與興趣收藏紀錄，<strong>絕非營利用途</strong>。</li>
+                <li><strong>版權聲明：</strong>網站內所有照片、素材皆來自網路公開資源，版權歸原創作者或官方所有。</li>
+                <li><strong>禁止商用：</strong>任何瀏覽者<strong>亦不可將此網站內容或作為任何盈利、商業用途</strong>。</li>
+            </ul>
+        </div>
+        <button class="notice-btn" id="closeNoticeBtn">我已了解並同意</button>
+    </div>
+</div>
 
 <div class="header-section">
     <h1>ITZY! MIDZY! 날자!</h1>
@@ -217,6 +292,18 @@
 </div>
 
 <script>
+    // ====== 0. 【新功能：免責聲明彈窗邏輯】 ======
+    const noticeOverlay = document.getElementById('noticeOverlay');
+    const closeNoticeBtn = document.getElementById('closeNoticeBtn');
+
+    closeNoticeBtn.addEventListener('click', () => {
+        // 點擊按鈕後，讓視窗淡出並消失
+        noticeOverlay.style.opacity = '0';
+        setTimeout(() => {
+            noticeOverlay.style.display = 'none';
+        }, 400); // 400毫秒後完全從畫面上拔除，對應 CSS transition 時間
+    });
+
     // 💡 輪播資料庫
     const bannerMediaFiles = [
         { 
@@ -347,7 +434,7 @@
         startAutoSlide();
     }
 
-    // 💡 【修正：移除點擊跳轉】現在首頁輪播純粹用來切換下一張圖，永遠不會意外跳轉內頁
+    // 💡 監聽輪播看板的點擊事件
     sliderContainer.addEventListener('click', (e) => {
         changeToNextRandomSlide();
         resetSlideTimer();
