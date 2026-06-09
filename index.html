@@ -5,48 +5,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 周邊 & 專輯搜尋庫</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            max-width: 900px;
-            margin: 0 auto 40px auto;
-            padding: 0 20px;
-            background-color: #f9fafb;
-            color: #111827;
+        :root {
+            --primary-color: #e11d48;
+            --primary-hover: #be123c;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
         }
-        .header-section { text-align: center; padding: 40px 0 20px 0; }
-        h1 { color: #e11d48; font-size: 2.5rem; margin-bottom: 10px; letter-spacing: 2px; }
-        .search-container { margin-top: 25px; position: relative; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .search-input { width: 100%; padding: 14px 20px; font-size: 1.1rem; border: 2px solid #e5e7eb; border-radius: 30px; outline: none; }
-        .search-input:focus { border-color: #e11d48; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15); }
-        .status-text { text-align: center; color: #6b7280; margin-bottom: 30px; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-        .item-card { background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04); border: 1px solid #f3f4f6; transition: all 0.3s ease; display: flex; flex-direction: column; }
-        .item-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
+
+        body {
+            font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto 60px auto;
+            padding: 0 24px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* 標頭美化 */
+        .header-section { 
+            text-align: center; 
+            padding: 50px 0 30px 0; 
+        }
+        h1 { 
+            color: var(--primary-color); 
+            font-size: 2.8rem; 
+            font-weight: 800;
+            margin-bottom: 8px; 
+            letter-spacing: 3px;
+            text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1);
+        }
+        .header-subtitle {
+            color: var(--text-muted); 
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* 搜尋框美化 (現代微發光效果) */
+        .search-container { 
+            margin: 35px auto 0 auto; 
+            position: relative; 
+            max-width: 540px; 
+        }
+        .search-input { 
+            width: 100%; 
+            padding: 16px 26px; 
+            font-size: 1.05rem; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 50px; 
+            outline: none; 
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .search-input:focus { 
+            border-color: var(--primary-color); 
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .status-text { 
+            text-align: center; 
+            color: var(--text-muted); 
+            margin-bottom: 35px; 
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* 商品網格與卡片美化 */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px; 
+        }
+        .item-card { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03), 0 1px 4px rgba(15, 23, 42, 0.02);
+            border: 1px solid #f1f5f9; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .item-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+            border-color: #e2e8f0;
+        }
         
-        .img-link { width: 100%; height: 260px; overflow: hidden; display: block; cursor: pointer; }
-        .img-link img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-        .img-link:hover img { transform: scale(1.05); }
+        .img-link { 
+            width: 100%; 
+            height: 280px; 
+            overflow: hidden; 
+            display: block; 
+            cursor: pointer; 
+            background-color: #f1f5f9;
+        }
+        .img-link img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .item-card:hover .img-link img { 
+            transform: scale(1.06); 
+        }
 
-        .item-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .item-type { align-self: flex-start; font-size: 0.75rem; font-weight: bold; padding: 4px 8px; border-radius: 4px; margin-bottom: 10px; }
-        .type-album { background-color: #fee2e2; color: #ef4444; }
+        .item-info { 
+            padding: 24px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .item-type { 
+            align-self: flex-start; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            padding: 6px 12px; 
+            border-radius: 30px; 
+            margin-bottom: 14px; 
+            letter-spacing: 0.5px;
+        }
+        .type-album { background-color: #ffe4e6; color: #f43f5e; }
         .type-goods { background-color: #e0f2fe; color: #0284c7; }
-        .item-title { font-size: 1.15rem; font-weight: bold; margin: 0 0 8px 0; }
-        .item-date { font-size: 0.85rem; color: #9ca3af; margin-bottom: 10px; }
-        .item-desc { font-size: 0.9rem; color: #4b5563; line-height: 1.5; margin: 0; }
-        .no-results { grid-column: 1 / -1; text-align: center; padding: 50px 0; color: #9ca3af; display: none; }
+        
+        .item-title { 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            margin: 0 0 8px 0; 
+            color: var(--text-main);
+        }
+        .item-date { 
+            font-size: 0.85rem; 
+            color: var(--text-muted); 
+            margin-bottom: 12px; 
+            font-weight: 500;
+        }
+        .item-desc { 
+            font-size: 0.92rem; 
+            color: #475569; 
+            line-height: 1.6; 
+            margin: 0; 
+        }
+        .no-results { 
+            grid-column: 1 / -1; 
+            text-align: center; 
+            padding: 60px 0; 
+            color: var(--text-muted); 
+            display: none; 
+            font-size: 1.1rem;
+        }
 
-        /* ======================================================== */
-        /* ✨ 新增：自動輪播看版 (Slider) CSS 樣式 */
-        /* ======================================================== */
+        /* 自動輪播看版美化 */
         .slider-container {
             width: 100%;
-            height: 380px; /* 看板高度，可自行調整 */
-            margin-top: 20px;
-            border-radius: 20px;
+            height: 400px; 
+            margin-top: 25px;
+            border-radius: 24px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
             background-color: #000;
         }
         .slider-item {
@@ -56,7 +178,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out; /* 1秒淡入淡出效果 */
+            transition: opacity 1.2s ease-in-out; 
             z-index: 1;
         }
         .slider-item.active {
@@ -66,21 +188,20 @@
         .slider-item img, .slider-item video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 讓圖片/影片完美填滿不變形 */
+            object-fit: cover; 
         }
     </style>
 </head>
 <body>
 
 <div class="header-section">
-    <h1>👑 ITZY ARCHIVE</h1>
-    <p style="color: #4b5563; font-weight: 500;">專輯、周邊與官方商品即時搜尋庫</p>
+    <h1>👑 ITZY MIDZY 날자</h1>
+    <p class="header-subtitle">專輯、周邊與官方商品即時搜尋庫</p>
 
-    <div class="slider-container" id="hero-slider">
-        </div>
+    <div class="slider-container" id="hero-slider"></div>
 
     <div class="search-container">
-        <input type="text" id="search-box" class="search-input" placeholder="輸入關鍵字... (如: Gold, 應援棒)">
+        <input type="text" id="search-box" class="search-input" placeholder="輸入關鍵字搜尋... (如: Gold, 應援棒)">
     </div>
 </div>
 
@@ -91,19 +212,17 @@
 </div>
 
 <script>
-    // ========================================================
-    // 💡 填寫處 1：在這裡放你想放在主頁頂端「自動輪播」的照片或影片路徑
-    // ========================================================
     const bannerMediaFiles = [
-        "./Motto/motto.jpg",              // 圖片範例
-        "./Motto/pop_up store1.jpg",      // 圖片範例
-        "./Motto/pop_up store2.jpg",      // 圖片範例
-        "./Motto/itzy_teaser.mp4"         // 🎬 影片範例：如果是影片，記得檔名要是 .mp4
+        "./video/IMG_4869.jpg",              
+        "./video/IMG_4926.jpg",      
+        "./video/IMG_4923.jpg",      
+        // "./Motto/itzy_teaser.mp4",         
+        "./video/IMG_4928.jpg", 
+        "./video/IMG_4932.jpg", 
+        "./video/IMG_4933.jpg",
+        "./video/IMG_4934.jpg"
     ];
 
-    // ========================================================
-    // 💡 填寫處 2：原本的 ITZY 商品搜尋庫資料（完全沒改你的圖片名字）
-    // ========================================================
     const itzyDatabase = [
         {
             id: "motto",
@@ -112,8 +231,7 @@
             typeName: "官方專輯",
             date: "2026.05.18",
             desc: "ITZY 的第十二張迷你專輯",
-            image: "./Motto/motto.jpg", 
-            moreImages: ["./Motto/pop_up store1.jpg", "./Motto/pop_up store2.jpg"] 
+            image: "./Motto/motto.jpg"
         },
         {
             id: "lightring",
@@ -122,22 +240,25 @@
             typeName: "官方周邊",
             date: "官方常售商品",
             desc: "別具特色的環形應援燈二代！支援中控幻彩變色。",
-            image: "Motto/lightring_1.jpg",
-            moreImages: ["Motto/lightring_1.jpg", "Motto/lightring_2.jpg", "Motto/lightring_box.jpg"]
+            image: "./Motto/lightring_1.jpg"
         }
     ];
 
-    // --------------------------------------------------------
-    // 自動輪播核心 JavaScript 邏輯
-    // --------------------------------------------------------
+    // 隨機洗牌演算法 (隨機播放)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    shuffleArray(bannerMediaFiles);
+
+    // 初始化輪播
     const heroSlider = document.getElementById('hero-slider');
-    
-    // 初始化輪播元件
     bannerMediaFiles.forEach((src, index) => {
         const slide = document.createElement('div');
         slide.className = `slider-item ${index === 0 ? 'active' : ''}`;
         
-        // 判斷如果副檔名是 mp4 則用 video 標籤，否則用 img 標籤
         if (src.toLowerCase().endsWith('.mp4')) {
             slide.innerHTML = `<video src="${src}" autoplay loop muted playsinline></video>`;
         } else {
@@ -146,7 +267,6 @@
         heroSlider.appendChild(slide);
     });
 
-    // 設定每 4000 毫秒 (4秒) 自動切換下一張
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slider-item');
     
@@ -156,15 +276,12 @@
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
             
-            // 修正：如果切換到影片，確保它有自動播放
             const video = slides[currentSlide].querySelector('video');
             if(video) { video.play(); }
         }, 4000); 
     }
 
-    // --------------------------------------------------------
-    // 原本的搜尋與卡片渲染邏輯（無更動）
-    // --------------------------------------------------------
+    // 搜尋與渲染
     const searchBox = document.getElementById('search-box');
     const productsGrid = document.getElementById('products-grid');
     const statusCount = document.getElementById('status-count');
