@@ -59,7 +59,7 @@
         .header-section { text-align: center; padding: 50px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(225, 29, 72, 0.1); }
         
-        /* 隨機照片展示框樣式（移除了文字欄位，改用純圖片容器樣式） */
+        /* 🎯 升級版：輪播照片展示框樣式 */
         .random-banner-container {
             max-width: 800px;
             margin: 30px auto 30px auto;
@@ -68,14 +68,43 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             background: var(--card-bg);
+            position: relative; /* 讓左右按鈕可以定位 */
         }
         .random-banner-container img {
             width: 100%;
-            /* 預設高度為 400px，若資料庫有設定會被個別覆蓋 */
-            height: 400px; 
+            height: 400px; /* 預設高度，會被 JS 動態覆蓋 */
             object-fit: cover;
             display: block;
+            transition: all 0.3s ease-in-out; /* 切換時帶有輕微淡入淡出感 */
         }
+
+        /* 🎯 輪播圖左右切換按鈕 */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--text-main);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .carousel-btn:hover {
+            background: white;
+            color: var(--primary-color);
+            scale: 1.05;
+        }
+        .carousel-btn.prev { left: 16px; }
+        .carousel-btn.next { right: 16px; }
 
         .search-container { margin: 0 auto 40px auto; position: relative; max-width: 600px; }
         
@@ -180,7 +209,9 @@
 </div>
 
 <div class="random-banner-container" id="randomBannerBox" style="display: none;">
-    <img id="randomBannerImg" src="" alt="隨機推薦精選圖">
+    <button class="carousel-btn prev" id="carouselPrevBtn">❮</button>
+    <img id="randomBannerImg" src="" alt="推薦精選輪播圖">
+    <button class="carousel-btn next" id="carouselNextBtn">❯</button>
 </div>
 
 <div class="search-container">
@@ -194,7 +225,7 @@
     document.getElementById('agreeBtn').onclick = () => {
         document.getElementById('noticeOverlay').style.display = 'none';
         document.getElementById('noticeBar').style.display = 'block';
-        initRandomBanner();
+        initRandomBanner(); // 同意後開啟輪播
     };
 
     // 2. 回饋功能
@@ -244,31 +275,71 @@
         {id: "lightring", title: "ITZY 官方應援棒 Ver.2", type: "goods", typeName: "官方周邊", date: "官方常售商品", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
     ];
     
-    // 🎯 關鍵修改：移除 text 文字欄位，改為設定每個圖片所需要的專屬高度 (imgHeight)
+    // 🎯 關鍵修改：你可以自由微調每張圖的 imgHeight（高度）與 objectPosition（上下左右裁切對齊位置）
     const randomPhotosPool = [
-        { img: "./Motto/Motto.jpg", imgHeight: "450px" },        // 👈 這張想要比較高 (450px)
-        { img: "./Motto/pop_up_store.jpg", imgHeight: "350px" }, // 👈 這張想要矮一點 (350px)
-        { img: "./motto/lightring_1.jpg", imgHeight: "400px" },  // 👈 這張想要剛好 (400px)
-        { img: "./Motto/motto3.jpg", imgHeight: "300px" }        // 👈 這張想要小圖橫幅 (300px)
+        { img: "./video/IMG_4869.jpg", imgHeight: "400px", objectPosition: "center center" }, // 預設居中
+        { img: "./video/IMG_4870.jpg", imgHeight: "350px", objectPosition: "center top" },    // 👈 靠上對齊（防切頭）
+        { img: "./video/IMG_4823.jpg", imgHeight: "400px", objectPosition: "center bottom" }, // 👈 靠下對齊
+        { img: "./video/IMG_4826.jpg", imgHeight: "400px", objectPosition: "20% center" },    // 👈 靠左微調
+        { img: "./video/IMG_4828.jpg", imgHeight: "450px", objectPosition: "center center" }, 
+        { img: "./video/IMG_4832.jpg", imgHeight: "400px", objectPosition: "center center" }, 
+        { img: "./video/IMG_4833.jpg", imgHeight: "400px", objectPosition: "center center" }, 
+        { img: "./video/IMG_4834.jpg", imgHeight: "400px", objectPosition: "center center" }  
     ];
 
-    // 初始化隨機照片邏輯
+    // 🎯 輪播狀態控制變數
+    let currentCarouselIndex = 0;
+    let carouselTimer = null;
+
+    // 更新並渲染當前輪播圖片
+    function updateCarousel() {
+        if (randomPhotosPool.length === 0) return;
+        
+        const bannerImg = document.getElementById('randomBannerImg');
+        const data = randomPhotosPool[currentCarouselIndex];
+        
+        bannerImg.src = data.img;
+        // 動態注入高度與位置微調
+        bannerImg.style.height = data.imgHeight ? data.imgHeight : "400px";
+        bannerImg.style.objectPosition = data.objectPosition ? data.objectPosition : "center center";
+    }
+
+    // 前一張、後一張邏輯
+    function nextSlide() {
+        currentCarouselIndex = (currentCarouselIndex + 1) % randomPhotosPool.length;
+        updateCarousel();
+    }
+    function prevSlide() {
+        currentCarouselIndex = (currentCarouselIndex - 1 + randomPhotosPool.length) % randomPhotosPool.length;
+        updateCarousel();
+    }
+
+    // 初始化輪播邏輯
     function initRandomBanner() {
         if (randomPhotosPool.length > 0) {
             const bannerBox = document.getElementById('randomBannerBox');
-            const bannerImg = document.getElementById('randomBannerImg');
             
-            const randomIndex = Math.floor(Math.random() * randomPhotosPool.length);
-            const selectedPhoto = randomPhotosPool[randomIndex];
-            
-            // 塞入圖片路徑
-            bannerImg.src = selectedPhoto.img;
-            
-            // 🎯 個別動態控制該張圖片的高度（如果資料裡沒寫，就給它預設值 400px）
-            bannerImg.style.height = selectedPhoto.imgHeight ? selectedPhoto.imgHeight : "400px";
-            
+            // 隨機選一個作為初始第一張（也可以固定為 0）
+            currentCarouselIndex = Math.floor(Math.random() * randomPhotosPool.length);
+            updateCarousel();
             bannerBox.style.display = 'block';
+
+            // 設定定時自動輪播 (每 4000 毫秒 = 4秒 切換一次)
+            startTimer();
+
+            // 滑鼠移入暫停，移出繼續
+            bannerBox.onmouseenter = () => clearInterval(carouselTimer);
+            bannerBox.onmouseleave = () => startTimer();
+
+            // 綁定按鈕點擊事件
+            document.getElementById('carouselPrevBtn').onclick = (e) => { e.stopPropagation(); prevSlide(); };
+            document.getElementById('carouselNextBtn').onclick = (e) => { e.stopPropagation(); nextSlide(); };
         }
+    }
+
+    function startTimer() {
+        clearInterval(carouselTimer);
+        carouselTimer = setInterval(nextSlide, 4000);
     }
 
     function renderItems(items) {
