@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITZY 細節相簿展示</title>
+    <style>
+        :root {
+            --primary-color: #e11d48;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+        body {
+            font-family: 'PingFang TC', 'Heiti TC', 'Segoe UI', Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto 60px auto;
+            padding: 24px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        /* 返回按鈕 */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 25px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateX(-4px);
+        }
+
+        .album-header {
+            margin-bottom: 35px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        /* 照片牆網格 */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .photo-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease;
+        }
+        .photo-card:hover {
+            transform: scale(1.02);
+        }
+        .photo-card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            cursor: zoom-in;
+        }
+        .photo-desc {
+            padding: 14px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #334155;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* 點擊放大燈箱 (Lightbox) */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(8px);
+        }
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+        }
+        .lightbox.active img {
+            transform: scale(1);
+        }
+        .lightbox-hint {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<a id="back-link" href="index.html" class="back-btn">⬅️ 返回上一頁</a>
+
+<div class="album-header">
+    <h1 id="album-title">正在載入相簿...</h1>
+</div>
+
+<div id="photo-container" class="image-grid"></div>
+
+<div id="lightbox" class="lightbox">
+    <img id="lightbox-img" src="" alt="放大圖">
+    <div class="lightbox-hint">點擊任意處關閉</div>
+</div>
+
+<script>
+    // 這裡獨立管理所有分類相簿內的真實照片路徑
+    const photosDatabase = {
+        "motto": {
+            "popup": {
+                title: "Motto - 快閃店限定相簿展示",
+                images: [
+                    { img: "./Motto/pop_up store1.jpg", text: "快閃店限定專輯小卡牆全景" },
+                    { img: "./Motto/pop_up store2.jpg", text: "現場專屬明信片與周邊展示區" }
+                ]
+            },
+            "offline": {
+                title: "Motto - 線下慶祝活動紀錄",
+                images: [
+                    { img: "./Motto/IMG_5365.jpeg", text: "ms2.0線下蛋糕" }
+                ]
+            }
+        },
+        "lightring": {
+            "product": {
+                title: "應援棒 Ver.2 - 外觀細節實拍",
+                images: [
+                    { img: "./Motto/lightring_1.jpg", text: "應援棒主體與發光環特寫" },
+                    { img: "./Motto/lightring_2.jpg", text: "防滑手把與中央控制按鈕細節" }
+                ]
+            },
+            "packaging": {
+                title: "應援棒 Ver.2 - 官方質感外盒",
+                images: [
+                    { img: "./Motto/lightring_box.jpg", text: "官方原裝質感外包裝盒" }
+                ]
+            }
+        }
+    };
+
+    // 1. 解析網址後方的 ?id=motto&album=popup 參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const albumId = urlParams.get('album');
+
+    // 2. 讓返回按鈕能精準回到對應的 detail 頁面（例如 detail.html?id=motto）
+    if (productId) {
+        document.getElementById('back-link').href = `detail.html?id=${productId}`;
+    }
+
+    // 3. 撈取資料庫並動態生成照片牆
+    try {
+        const currentAlbum = photosDatabase[productId][albumId];
+        if (currentAlbum) {
+            document.getElementById('album-title').innerText = currentAlbum.title;
+
+            const container = document.getElementById('photo-container');
+            currentAlbum.images.forEach(photo => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.innerHTML = `
+                    <img src="${photo.img}" alt="實拍細節照片" class="zoomable-img">
+                    <div class="photo-desc">${photo.text}</div>
+                `;
+                container.appendChild(card);
+            });
+
+            // 4. 點擊圖片放大燈箱功能
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const zoomableImages = document.querySelectorAll('.zoomable-img');
+
+            zoomableImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src;
+                    lightbox.classList.add('active');
+                });
+            });
+
+            lightbox.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
+
+        } else {
+            document.getElementById('album-title').innerText = "抱歉，找不到該分組相簿。";
+        }
+    } catch(e) {
+        document.getElementById('album-title').innerText = "資料讀取失敗。";
+    }
+</script>
+
+</body>
+</html>
