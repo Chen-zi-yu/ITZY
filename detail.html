@@ -7,7 +7,6 @@
     <style>
         :root { --primary-color: #e11d48; --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b; }
         body { 
-            /* 🎯 關鍵：英文 Times New Roman 排前面，中文標楷體排後面 */
             font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif; 
             max-width: 850px; 
             margin: 0 auto 50px auto; 
@@ -31,11 +30,11 @@
         .folder-badge { position: absolute; top: 12px; left: 12px; background: rgba(15,23,42,0.75); color: white; padding: 4px 10px; border-radius: 30px; font-size: 0.75rem; }
         .album-info { padding: 18px; }
         .album-name { font-size: 1.1rem; font-weight: 700; margin: 0; }
-	/* 針對快閃店的相簿卡片封面圖進行微調 */
-	/* first-child 代表第一個卡片 (快閃店)，若它是第二個則改為 nth-child(2) */
-	.album-card:first-child .album-cover-wrap img {
-	    object-position: center 20%; /* 數字越小，圖片顯示的位置越往上移 */
-	}
+
+        /* 🎯 重點調整區：強制讓第一個相簿封面圖片貼齊頂部 */
+        .album-card:first-child .album-cover-wrap img {
+            object-position: center 0% !important; 
+        }
     </style>
 </head>
 <body>
