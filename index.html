@@ -52,6 +52,33 @@
         .yt-btn { color: #ef4444; background: #fef2f2; border: 1px solid #fecaca; }
         .x-btn { color: #0f172a; background: #f8fafc; border: 1px solid #e2e8f0; }
         .fb-btn { color: #1877f2; background: #f0f7ff; border: 1px solid #d0e7ff; }
+
+	/* Discord 提供照片按鈕 */
+	.discord-float-btn {
+	    position: fixed;
+	    right: -55px;
+	    top: 50%;
+	    transform: translateY(-50%) rotate(-90deg);
+
+	    background: #5865F2;
+	    color: white;
+
+	    padding: 12px 24px;
+
+	    text-decoration: none;
+	    font-weight: bold;
+	    font-size: 15px;
+
+	    border-radius: 12px 12px 0 0;
+
+	    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+	    z-index: 9998;
+
+	    transition: all 0.2s ease;
+	}
+
+	.discord-float-btn:hover { right: -45px; }
     </style>
 </head>
 <body>
@@ -79,6 +106,13 @@
 <button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
 
 <div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
+
+<a href="https://discord.gg/nGGmzzCu"
+   target="_blank"
+   class="discord-float-btn"
+   title="提供照片">
+   📷 提供照片
+</a>
     <div class="feedback-box">
         <h3>💡 給我們意見</h3>
         <textarea id="feedbackText" placeholder="請輸入您的建議..."></textarea>
@@ -139,7 +173,7 @@
     const itzyDatabase = [
         {id: "motto", title: "Motto (Mini Album)", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/motto2.jpg"},
         {id: "lightring", title: "ITZY 官方應援棒", desc: "精緻環形應援燈。", image: "./light/lightring.jpg"},
-        {id: "gold", title: "GOLD (Mini Album)", desc: "ITZY 的第九張迷你專輯。", image: "./GOLD/lightring.jpg"}
+        {id: "gold", title: "GOLD (Mini Album)", desc: "ITZY 的第九張迷你專輯。", image: "./GOLD/GOLD.jpg"}
 	/* 在此處以下新增資料 */
     ];
     
