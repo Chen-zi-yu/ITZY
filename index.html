@@ -5,47 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 專輯與周邊紀錄庫</title>
     <style>
-        :root {
-            --primary-color: #e11d48;
-            --primary-hover: #be123c;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+        :root { --primary-color: #e11d48; --primary-hover: #be123c; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; }
+        
+        /* --- 燈箱樣式 --- */
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 10000; cursor: pointer;
         }
+        #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 
-        body {
-            font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif;
-            max-width: 1200px;    
-            margin: 0 auto 60px auto;
-            padding: 0 24px;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.5;
-        }
+        /* 字體設定：先執行標楷體 (中文)，後執行 Times New Roman (英文) */
+        body { font-family: '標楷體', 'BiauKai', 'DFKai-SB', 'Times New Roman', Times, serif; max-width: 1200px; margin: 0 auto 60px auto; padding: 0 24px; background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; }
 
         /* --- 跑馬燈 --- */
-        .notice-bar {
-            background-color: #fff1f2; color: var(--primary-color); padding: 10px 0;
-            overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600;
-            border-bottom: 1px solid #ffe4e6; position: sticky; top: 0; z-index: 9999;
-            display: none; width: 100%; box-sizing: border-box;
-        }
+        .notice-bar { background-color: #fff1f2; color: var(--primary-color); padding: 10px 0; overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid #ffe4e6; position: sticky; top: 0; z-index: 9999; display: none; width: 100%; box-sizing: border-box; }
         .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* --- 彈出視窗 --- */
-        .notice-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000;
-        }
-        .notice-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
+        /* --- 彈窗與回饋樣式 --- */
+        .notice-overlay, .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .notice-box, .feedback-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
         .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; font-family: inherit; }
-
-        /* --- 其他樣式 --- */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
-        .feedback-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
-        .feedback-box { background: white; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; font-weight: bold; }
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; resize: none; font-family: inherit; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; font-family: inherit; font-weight: bold; }
         
@@ -56,7 +38,6 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
         .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
-        /* --- 社交按鈕樣式 (完整保留) --- */
         .social-links { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .social-links a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; }
         .social-links a:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.08); }
@@ -67,6 +48,10 @@
     </style>
 </head>
 <body>
+
+<div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="" alt="放大預覽">
+</div>
 
 <div class="notice-bar" id="noticeBar">
     <span>📢 本網站為個人非營利收藏紀錄，所有照片與素材皆來自網路公開資源，版權歸原創作者所有。本站內容禁止作為任何商業盈利用途。</span>
@@ -148,8 +133,18 @@
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = items.map(item => `
             <div class="item-card">
-                <a class="img-link" href="detail.html?id=${item.id}"><img src="${item.image}" style="width:100%; height:260px; object-fit:cover;"></a>
-                <div style="padding:20px"><h3>${item.title}</h3><p>${item.desc}</p></div>
+                <div style="cursor: pointer;" onclick="document.getElementById('lightbox-img').src='${item.image}'; document.getElementById('lightbox').style.display='flex';">
+                    <img src="${item.image}" style="width:100%; height:260px; object-fit:cover;">
+                </div>
+                <div style="padding:20px">
+                    <a href="detail.html?id=${item.id}" style="text-decoration:none; color:inherit;">
+                        <h3>${item.title}</h3>
+                        <p style="color: var(--primary-color); font-size: 0.85rem; font-weight: bold; margin-top: -10px;">
+                            👉 點擊此處查看詳細內容
+                        </p>
+                    </a>
+                    <p style="color: var(--text-muted);">${item.desc}</p>
+                </div>
             </div>
         `).join('');
     }
