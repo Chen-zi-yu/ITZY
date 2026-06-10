@@ -24,27 +24,43 @@
         .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* --- 彈出視窗與意見回饋介面樣式 --- */
+        /* --- 新增：主視覺封面樣式 --- */
+        .main-banner {
+            width: 100%;
+            height: 350px; /* 封面高度 */
+            margin-top: 20px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background-color: #f1f5f9;
+        }
+        .main-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 讓圖片填滿並保持比例 */
+            object-position: center 20%; /* 調整圖片顯示的垂直位置 */
+        }
+
+        /* --- 彈出視窗樣式 --- */
         .notice-overlay, .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
         .notice-box, .feedback-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
         .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; font-family: inherit; }
+        
+        /* 懸浮按鈕 */
         .feedback-float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 9998; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.3); }
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; resize: none; font-family: inherit; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; font-family: inherit; font-weight: bold; }
         
-        /* --- 網頁標題與社群連結 --- */
-        .header-section { text-align: center; padding: 50px 0 10px 0; }
+        .header-section { text-align: center; padding: 30px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; }
+        .header-subtitle { font-weight: bold; color: var(--text-muted); }
+
+        .search-container { margin: 20px auto 40px auto; max-width: 600px; }
+        .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; outline: none; font-family: inherit; }
         
-        /* --- 搜尋列 --- */
-        .search-container { margin: 40px auto 40px auto; max-width: 600px; }
-        .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; outline: none; }
-        
-        /* --- 商品卡片網格佈局 --- */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
         .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
-        /* --- 社群連結按鈕樣式 --- */
         .social-links { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .social-links a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; }
         .social-links a:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.08); }
@@ -53,32 +69,24 @@
         .x-btn { color: #0f172a; background: #f8fafc; border: 1px solid #e2e8f0; }
         .fb-btn { color: #1877f2; background: #f0f7ff; border: 1px solid #d0e7ff; }
 
-	/* Discord 提供照片按鈕 */
-	.discord-float-btn {
-	    position: fixed;
-	    right: -55px;
-	    top: 50%;
-	    transform: translateY(-50%) rotate(-90deg);
-
-	    background: #5865F2;
-	    color: white;
-
-	    padding: 12px 24px;
-
-	    text-decoration: none;
-	    font-weight: bold;
-	    font-size: 15px;
-
-	    border-radius: 12px 12px 0 0;
-
-	    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-
-	    z-index: 9998;
-
-	    transition: all 0.2s ease;
-	}
-
-	.discord-float-btn:hover { right: -45px; }
+        /* Discord 懸浮按鈕 */
+        .discord-float-btn {
+            position: fixed;
+            right: -55px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            background: #5865F2;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 9998;
+            transition: all 0.2s ease;
+        }
+        .discord-float-btn:hover { right: -45px; }
     </style>
 </head>
 <body>
@@ -103,21 +111,17 @@
     </div>
 </div>
 
+<a href="https://discord.gg/nGGmzzCu" target="_blank" class="discord-float-btn">📷 提供照片</a>
+
 <button class="feedback-float-btn" id="openFeedbackBtn">💬</button>
-
 <div class="feedback-overlay" id="feedbackOverlay" style="display: none;">
-
-<a href="https://discord.gg/nGGmzzCu"
-   target="_blank"
-   class="discord-float-btn"
-   title="提供照片">
-   📷 提供照片
-</a>
     <div class="feedback-box">
         <h3>💡 給我們意見</h3>
         <textarea id="feedbackText" placeholder="請輸入您的建議..."></textarea>
-        <button type="button" class="btn-submit" style="background:#64748b" id="closeFeedbackBtn">取消</button>
-        <button type="button" class="btn-submit" id="submitFeedback">送出</button>
+        <div style="display:flex; gap:10px; justify-content: center;">
+            <button type="button" class="btn-submit" style="background:#64748b" id="closeFeedbackBtn">取消</button>
+            <button type="button" class="btn-submit" id="submitFeedback">送出</button>
+        </div>
     </div>
 </div>
 
@@ -174,7 +178,6 @@
         {id: "motto", title: "Motto (Mini Album)", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/motto2.jpg"},
         {id: "lightring", title: "ITZY 官方應援棒", desc: "精緻環形應援燈。", image: "./light/lightring.jpg"},
         {id: "gold", title: "GOLD (Mini Album)", desc: "ITZY 的第九張迷你專輯。", image: "./GOLD/GOLD.jpg"}
-	/* 在此處以下新增資料 */
     ];
     
     /* 渲染商品列表函式 */
