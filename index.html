@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 專輯與周邊紀錄庫</title>
     <style>
+        /* --- 全域變數定義 --- */
         :root { --primary-color: #e11d48; --primary-hover: #be123c; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; }
         
-        /* --- 燈箱樣式 --- */
+        /* --- 圖片燈箱效果樣式 --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); display: none;
@@ -15,15 +16,15 @@
         }
         #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 
-        /* 字體設定：先執行標楷體 (中文)，後執行 Times New Roman (英文) */
+        /* --- 字體設定 --- */
         body { font-family: '標楷體', 'BiauKai', 'DFKai-SB', 'Times New Roman', Times, serif; max-width: 1200px; margin: 0 auto 60px auto; padding: 0 24px; background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; }
 
-        /* --- 跑馬燈 --- */
+        /* --- 頂部跑馬燈公告樣式 --- */
         .notice-bar { background-color: #fff1f2; color: var(--primary-color); padding: 10px 0; overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid #ffe4e6; position: sticky; top: 0; z-index: 9999; display: none; width: 100%; box-sizing: border-box; }
         .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* --- 彈窗與回饋樣式 --- */
+        /* --- 彈出視窗與意見回饋介面樣式 --- */
         .notice-overlay, .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
         .notice-box, .feedback-box { background: white; width: 90%; max-width: 450px; padding: 30px; border-radius: 24px; text-align: center; font-weight: bold; }
         .notice-btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; font-family: inherit; }
@@ -31,13 +32,19 @@
         textarea { width: 100%; height: 100px; margin-top: 10px; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; box-sizing: border-box; resize: none; font-family: inherit; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; margin-top: 15px; font-family: inherit; font-weight: bold; }
         
+        /* --- 網頁標題與社群連結 --- */
         .header-section { text-align: center; padding: 50px 0 10px 0; }
         h1 { color: var(--primary-color); font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 3px; }
+        
+        /* --- 搜尋列 --- */
         .search-container { margin: 40px auto 40px auto; max-width: 600px; }
         .search-input { width: 100%; padding: 16px 26px; border: 2px solid #e2e8f0; border-radius: 50px; outline: none; }
+        
+        /* --- 商品卡片網格佈局 --- */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
         .item-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
+        /* --- 社群連結按鈕樣式 --- */
         .social-links { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
         .social-links a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: all 0.2s ease-in-out; }
         .social-links a:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.08); }
@@ -98,6 +105,7 @@
 <div class="grid-container" id="productsGrid"></div>
 
 <script>
+    /* 檢查使用聲明同意狀態 */
     function checkNoticeStatus() {
         const hasAgreed = sessionStorage.getItem('itzy_notice_agreed');
         if (hasAgreed === 'true') {
@@ -109,14 +117,17 @@
         }
     }
 
+    /* 同意聲明按鈕邏輯 */
     document.getElementById('agreeBtn').onclick = () => {
         sessionStorage.setItem('itzy_notice_agreed', 'true');
         checkNoticeStatus();
     };
 
+    /* 回饋彈窗開啟與關閉邏輯 */
     document.getElementById('openFeedbackBtn').onclick = () => document.getElementById('feedbackOverlay').style.display = 'flex';
     document.getElementById('closeFeedbackBtn').onclick = () => document.getElementById('feedbackOverlay').style.display = 'none';
     
+    /* 意見送出邏輯 */
     document.getElementById('submitFeedback').onclick = () => {
         const text = document.getElementById('feedbackText').value;
         if (!text.trim()) { alert('請輸入意見內容！'); return; }
@@ -124,11 +135,13 @@
         document.getElementById('feedbackOverlay').style.display = 'none';
     };
 
+    /* 產品資料庫 */
     const itzyDatabase = [
         {id: "motto", title: "Motto (Mini Album)", desc: "ITZY 的第十二張迷你專輯。", image: "./Motto/motto2.jpg"},
-        {id: "lightring", title: "ITZY 官方應援棒 Ver.2", desc: "精緻環形應援燈。", image: "./Motto/lightring_1.jpg"}
+        {id: "lightring", title: "ITZY 官方應援棒", desc: "精緻環形應援燈。", image: "./light/lightring.jpg"}
     ];
     
+    /* 渲染商品列表函式 */
     function renderItems(items) {
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = items.map(item => `
@@ -149,11 +162,13 @@
         `).join('');
     }
 
+    /* 搜尋輸入監聽邏輯 */
     document.getElementById('searchBox').oninput = function() {
         const keyword = this.value.toLowerCase().trim();
         renderItems(itzyDatabase.filter(item => item.title.toLowerCase().includes(keyword) || item.desc.toLowerCase().includes(keyword)));
     };
 
+    /* 頁面初始化執行 */
     checkNoticeStatus();
     renderItems(itzyDatabase);
 </script>

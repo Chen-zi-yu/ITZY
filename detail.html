@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITZY 周邊詳情展示</title>
     <style>
+        /* --- 全域變數定義 --- */
         :root { --primary-color: #e11d48; --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b; }
+        
+        /* --- 網頁基本字型與佈局 --- */
         body { 
             font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif; 
             max-width: 850px; margin: 0 auto 50px auto; padding: 24px; 
             background-color: var(--bg-color); color: var(--text-main); 
         }
 
-        /* --- 燈箱樣式 --- */
+        /* --- 圖片燈箱效果樣式 --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); display: none;
@@ -20,6 +23,7 @@
         }
         #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 
+        /* --- 頂部跑馬燈公告樣式 --- */
         .notice-bar {
             background-color: #fff1f2; color: var(--primary-color); padding: 10px 0;
             overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600;
@@ -29,18 +33,24 @@
         .notice-bar span { display: inline-block; padding-left: 100%; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
+        /* --- 返回列表按鈕樣式 --- */
         .back-btn { display: inline-flex; align-items: center; margin-bottom: 25px; color: var(--text-muted); text-decoration: none; font-weight: 600; padding: 10px 20px; background: white; border-radius: 50px; border: 1px solid #e2e8f0; transition: all 0.3s; font-family: inherit; }
         .back-btn:hover { color: var(--primary-color); border-color: var(--primary-color); transform: translateX(-4px); }
+        
+        /* --- 詳細內容卡片樣式 --- */
         .detail-card { background: white; border-radius: 24px; padding: 35px; box-shadow: 0 10px 30px rgba(15,23,42,0.04); border: 1px solid #e2e8f0; }
         
+        /* --- 封面圖容器樣式 --- */
         .detail-cover-container { width: 100%; height: 400px; border-radius: 16px; overflow: hidden; margin-bottom: 30px; background-color: #f1f5f9; }
         .detail-cover-container img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 
+        /* --- 標題、說明與分類區塊樣式 --- */
         h1 { font-size: 2.2rem; font-weight: 800; margin: 0 0 15px 0; }
         .description { color: #475569; margin: 0; }
         .section-title { font-size: 1.4rem; font-weight: 700; margin: 40px 0 20px 0; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
+        /* --- 分類卡片樣式 --- */
         .album-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.4s; }
         .album-card.is-clickable { cursor: pointer; }
         .album-card.is-clickable:hover { transform: translateY(-6px); border-color: var(--primary-color); }
@@ -75,12 +85,14 @@
 </div>
 
 <script>
+    /* 頁面載入時檢查是否已同意過網站聲明 */
     window.addEventListener('DOMContentLoaded', () => {
         if (sessionStorage.getItem('itzy_notice_agreed') === 'true') {
             document.getElementById('noticeBar').style.display = 'block';
         }
     });
 
+    /* 商品詳細資料庫 */
     const detailDatabase = {
         "motto": {
             coverImage: "./Motto/Motto.jpg", 
@@ -93,20 +105,23 @@
             ]
         },
         "lightring": {
-            coverImage: "./motto/lightring_1.jpg",
+            coverImage: "./light/lightring.jpg",
             title: "ITZY 官方應援棒",
             desc: "打破傳統棒狀設計，採用獨一無二的「環狀（飛盤狀）」設計。",
             albums: [
-                { id: "lightring", name: "手燈", cover: "./light/lightring.jpg" },
-                { id: "accessoties", name: "配件", cover: "./light/lightring_box.jpg" }
+                { id: "lightring1", name: "一代手燈", cover: "./light/lightring1.jpg" },
+                { id: "lightring2", name: "二代手燈", cover: "./light/lightring2.jpg" },
+                { id: "catear", name: "貓耳", cover: "./light/cat_ear.jpg" }
             ]
         }
     };
 
+    /* 獲取 URL 參數並讀取對應商品資料 */
     const urlParams = new URLSearchParams(window.location.search);
     const targetId = urlParams.get('id');
     const itemData = detailDatabase[targetId];
 
+    /* 動態填充商品內容 */
     if (itemData) {
         if (itemData.coverImage) {
             const coverImg = document.getElementById('cover-img');
@@ -116,6 +131,7 @@
         document.getElementById('title').innerText = itemData.title;
         document.getElementById('desc').innerText = itemData.desc;
 
+        /* 生成分類畫廊 */
         const galleryContainer = document.getElementById('gallery');
         itemData.albums.forEach(album => {
             const card = document.createElement('div');
@@ -132,6 +148,7 @@
                 </div>
             `;
             
+            /* 設定點擊行為（導向分類頁或觸發燈箱） */
             if (isClickable) {
                 card.addEventListener('click', () => {
                     window.location.href = `gallery.html?id=${targetId}&album=${album.id}`;
@@ -145,6 +162,7 @@
             galleryContainer.appendChild(card);
         });
     } else {
+        /* 處理找不到商品的情況 */
         document.getElementById('title').innerText = "抱歉，找不到該周邊的詳細資料。";
     }
 </script>
