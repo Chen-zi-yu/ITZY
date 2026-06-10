@@ -8,14 +8,18 @@
         :root { --primary-color: #e11d48; --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b; }
         body { 
             font-family: 'Times New Roman', Times, 'DFKai-SB', 'BiauKai', '標楷體', KaiTi, serif; 
-            max-width: 850px; 
-            margin: 0 auto 50px auto; 
-            padding: 24px; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
+            max-width: 850px; margin: 0 auto 50px auto; padding: 24px; 
+            background-color: var(--bg-color); color: var(--text-main); 
         }
 
-        /* --- 跑馬燈樣式 --- */
+        /* --- 燈箱樣式 --- */
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 10000; cursor: pointer;
+        }
+        #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
         .notice-bar {
             background-color: #fff1f2; color: var(--primary-color); padding: 10px 0;
             overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 600;
@@ -37,8 +41,9 @@
         .section-title { font-size: 1.4rem; font-weight: 700; margin: 40px 0 20px 0; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
-        .album-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.4s; cursor: pointer; }
-        .album-card:hover { transform: translateY(-6px); border-color: var(--primary-color); }
+        .album-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; transition: all 0.4s; }
+        .album-card.is-clickable { cursor: pointer; }
+        .album-card.is-clickable:hover { transform: translateY(-6px); border-color: var(--primary-color); }
         .album-cover-wrap { width: 100%; height: 400px; overflow: hidden; position: relative; }
         .album-cover-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
         .folder-badge { position: absolute; top: 12px; left: 12px; background: rgba(15,23,42,0.75); color: white; padding: 4px 10px; border-radius: 30px; font-size: 0.75rem; z-index: 1; }
@@ -50,6 +55,10 @@
 
 <div class="notice-bar" id="noticeBar">
     <span>📢 本網站為個人非營利收藏紀錄，所有照片與素材皆來自網路公開資源，版權歸原創作者所有。本站內容禁止作為任何商業盈利用途。</span>
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="" alt="放大預覽">
 </div>
 
 <a href="index.html" class="back-btn">⬅️ 返回商品列表</a>
@@ -66,7 +75,6 @@
 </div>
 
 <script>
-    // --- 使用 sessionStorage，重整頁面後即會重置狀態 ---
     window.addEventListener('DOMContentLoaded', () => {
         if (sessionStorage.getItem('itzy_notice_agreed') === 'true') {
             document.getElementById('noticeBar').style.display = 'block';
@@ -86,11 +94,11 @@
         },
         "lightring": {
             coverImage: "./motto/lightring_1.jpg",
-            title: "ITZY 官方應援棒 Ver.2",
-            desc: "別具特色的環形應援燈二代！支援中控幻彩變色。",
+            title: "ITZY 官方應援棒",
+            desc: "打破傳統棒狀設計，採用獨一無二的「環狀（飛盤狀）」設計。",
             albums: [
-                { id: "product", name: "應援棒外觀細節", cover: "./motto/lightring_1.jpg" },
-                { id: "packaging", name: "官方質感外盒", cover: "./motto/lightring_box.jpg" }
+                { id: "lightring", name: "手燈", cover: "./light/lightring.jpg" },
+                { id: "accessoties", name: "配件", cover: "./light/lightring_box.jpg" }
             ]
         }
     };
@@ -111,19 +119,29 @@
         const galleryContainer = document.getElementById('gallery');
         itemData.albums.forEach(album => {
             const card = document.createElement('div');
-            card.className = 'album-card';
+            const isClickable = targetId !== 'lightring';
+            card.className = `album-card ${isClickable ? 'is-clickable' : ''}`;
+            
             card.innerHTML = `
                 <div class="album-cover-wrap">
-                    <span class="folder-badge">📁 Album</span>
+                    <span class="folder-badge">${isClickable ? '📁 Album' : '🔍 點擊放大'}</span>
                     <img src="${album.cover}" alt="${album.name}">
                 </div>
                 <div class="album-info">
                     <h4 class="album-name">${album.name}</h4>
                 </div>
             `;
-            card.addEventListener('click', () => {
-                window.location.href = `gallery.html?id=${targetId}&album=${album.id}`;
-            });
+            
+            if (isClickable) {
+                card.addEventListener('click', () => {
+                    window.location.href = `gallery.html?id=${targetId}&album=${album.id}`;
+                });
+            } else {
+                card.addEventListener('click', () => {
+                    document.getElementById('lightbox-img').src = album.cover;
+                    document.getElementById('lightbox').style.display = 'flex';
+                });
+            }
             galleryContainer.appendChild(card);
         });
     } else {
