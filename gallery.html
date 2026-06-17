@@ -42,6 +42,22 @@
         }
         .back-btn:hover { color: var(--primary-color); border-color: var(--primary-color); transform: translateX(-4px); }
 
+        /* ====================================================================
+           【新增】返回拆卡查詢頁按鈕樣式
+           這個按鈕只會在使用者「從 Search 資料夾的 index.html 點擊拆卡品項
+           進來」時才顯示；若直接打開 gallery.html，不會出現此按鈕。
+           判斷邏輯寫在下方 JS 程式碼區塊內的 initBackToSearchButton()。
+           可更動項目：顏色、文字、位置，皆可直接修改下面 .back-to-search 樣式。
+           ==================================================================== */
+        .back-to-search {
+            display: none; /* 預設隱藏，符合條件時才用 JS 改成 inline-flex 顯示 */
+            align-items: center; margin-bottom: 12px; color: #0f172a;
+            text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 10px 20px;
+            background: #fff1f2; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--primary-color); transition: all 0.3s ease; font-family: inherit;
+        }
+        .back-to-search:hover { background: var(--primary-color); color: white; transform: translateX(-4px); }
+
         /* --- 頁面標題樣式 --- */
         .album-header { margin-bottom: 35px; border-left: 5px solid var(--primary-color); padding-left: 15px; }
         h1 { font-size: 2rem; font-weight: 800; margin: 0; color: var(--text-main); }
@@ -67,6 +83,9 @@
     <span>📢 本網站為個人非營利收藏紀錄，所有照片與素材皆來自網路公開資源，版權歸原創作者所有。本站內容禁止作為任何商業盈利用途。</span>
 </div>
 
+<!-- 【新增】返回拆卡查詢頁按鈕：預設隱藏，只有從 index.html 點過來時才會顯示 -->
+<a id="back-to-search-link" href="#" class="back-to-search">⬅️ 返回拆卡查詢</a>
+
 <a id="back-link" href="index.html" class="back-btn">⬅️ 返回詳情頁</a>
 
 <div class="album-header">
@@ -87,6 +106,30 @@
             document.getElementById('noticeBar').style.display = 'block';
         }
     });
+
+    // ====================================================================
+    // 【新增】判斷是否顯示「返回拆卡查詢」按鈕
+    //
+    // 規則：只有當網址帶有 ?from=search（且帶有 &back=目標網址）時，才會
+    // 顯示返回按鈕，並把按鈕的連結指向網址中 back 參數指定的網址。
+    // 這個參數是由 Search 資料夾的 index.html 在產生 gallery 連結時自動
+    // 加上的，所以「從 index 點進來」才會出現，「直接打開 gallery.html」
+    // 不會出現，符合單向返回的需求。
+    //
+    // ▶ 如果要調整判斷用的參數名稱，請確認這裡的 'from' / 'search' 與
+    //   index.html 裡 BACK_PARAM_KEY / BACK_PARAM_VAL 的設定一致。
+    // ====================================================================
+    function initBackToSearchButton() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get('from');
+        const backUrl = params.get('back');
+        if (from === 'search' && backUrl) {
+            const btn = document.getElementById('back-to-search-link');
+            btn.href = backUrl;
+            btn.style.display = 'inline-flex';
+        }
+    }
+    initBackToSearchButton();
 
     // --- 相簿內容資料庫 ---
     const photosDatabase = {
